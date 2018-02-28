@@ -1,7 +1,7 @@
 
 #include "us_motor.h"
 
-long speed_to_high_pulse(struct us_motor_device *umd, enum speed_rank speed)
+long speed_to_high_pulse(struct us_motor_device *umd, enum motor_speed speed)
 {
 	long high_pulse = 0;	
 	if(speed <  || angle > ds311x->max_angle){
@@ -38,9 +38,13 @@ int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
 	umd->channel = para->channel;
 	umd->type = para->type;
 	umd->dir = para->dir;
-	umd->upper_edge_reached = para->upper_edge_reached;
-	umd->middle_point_reached = para->middle_point_reached;
-	umd->lower_edge_reached = para->lower_edge_reached;
+	umd->upper_edge= para->upper_edge;
+	umd->middle_point= para->middle_point;
+	umd->lower_edge= para->lower_edge;
+	
+	umd->upper_edge_reached = us_motor_upper_edge_reached;
+	umd->middle_point_reached = us_motor_middle_point_reached;
+	umd->lower_edge_reached = us_motor_lower_edge_reached;
 
 	*pum = umd;	
 	/*  TODO: 修改speed对应PWM的high-pulse时间, 并且修改PWM的设置 */
@@ -50,7 +54,7 @@ int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
 	return 0;
 }
 
-int us_motor_set_speed(struct us_motor_device *umd, enum speed_rank speed);
+int us_motor_set_speed(struct us_motor_device *umd, enum speed_rank speed)
 {
 	long high_pulse = speed_to_high_pulse(umd, speed);
 	if(!umd || (high_pulse < 0)){
@@ -60,4 +64,16 @@ int us_motor_set_speed(struct us_motor_device *umd, enum speed_rank speed);
 	umd->speed = angle;
 	pwm_set_high_pulse(umd->tim, umd->channel, high_pulse);
 	return 0;
+}
+void us_motor_upper_edge_reached(struct us_motor_device *umd)
+{
+    return 0;
+}
+void us_motor_middle_point_reached(struct us_motor_device *umd)
+{
+    return 0;
+}
+void us_motor_lower_edge_reached(struct us_motor_device *umd)
+{
+    return 0;
 }
