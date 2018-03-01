@@ -44,13 +44,6 @@ u8 gpio_get_value(struct gpio *pio);
 
 void gpio_set_direction(struct gpio *pio, u8 dir);
 
-void adf7023_cs_assert(struct spi_dev *spi);
-
-uint8_t adf7023_miso_value(struct spi_dev *spi);
-
-void adf7023_cs_deassert(struct spi_dev *spi);
-
-
 char plat_gpio_init(void);
 
 void plat_spi_write_read(struct spi_dev *spi, uint8_t *pdata, uint8_t unused);
@@ -58,8 +51,6 @@ void plat_spi_write_read(struct spi_dev *spi, uint8_t *pdata, uint8_t unused);
 void platform_spi_init(struct spi_dev *spi, uint32_t freq);
 
 char plat_intr_init(struct gpio *pio);
-
-void platform_init_dist_timer(void);
 
 void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high_pulse);
 	

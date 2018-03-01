@@ -81,55 +81,11 @@ void USARTx_Init(uint32_t bound)
 
 #ifdef EN_USART1_RX  
 
-uint8_t USART_RX_BUF[USART_REC_LEN];	
 
-uint16_t USART_RX_STA=0;	
 
 
 void USART1_IRQHandler(void)
 {
-	uint8_t res;
-
-	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)  //接收到数据
-	{
-		res = USART_ReceiveData(USART1);	//读取接收到的数据
-		
-		if((USART_RX_STA & 0x8000) == 0)//接收未完成
-		{
-			if(USART_RX_STA & 0x4000)//接收到了0x0d
-			{
-				/***********************************************
-                                  修改内容如下
-                    当用户数据当中有0x0d的时候修正的错误的判断
-				***********************************************/
-				
-				if(res != 0x0a)
-				{
-					USART_RX_BUF[USART_RX_STA & 0x3fff] = 0x0d;	//补上丢失的0x0d数据
-					USART_RX_STA++;
-					USART_RX_BUF[USART_RX_STA & 0x3fff] = res;	//继续接收数据
-					USART_RX_STA++;
-					USART_RX_STA &= 0xbfff;						//清除0x0d标志
-				}
-				
-				/***********************************************
-                                      修改完成
-				***********************************************/
-				
-				else	USART_RX_STA |= 0x8000;	//接收完成了
-			}
-			else //还没收到0x0d
-			{	
-				if(res == 0x0d)	USART_RX_STA |= 0x4000;
-				else
-				{
-					USART_RX_BUF[USART_RX_STA & 0x3fff] = res;
-					USART_RX_STA++;
-					if(USART_RX_STA > (USART_REC_LEN - 1))	USART_RX_STA = 0;//接收数据错误,重新开始接收	  
-				}		 
-			}
-		}	//end 接收未完成   		 
-	}	//end 接收到数据
 }
 
 #endif	

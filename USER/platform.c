@@ -62,7 +62,7 @@ void platform_spi_init(struct spi_dev *spi, uint32_t freq)
 }
 
 /* FIXME: platform interrupt initialized here is irrelivant to the interrupt source configured by user. */
-char plat_intr_init(struct gpio *pio)
+char plat_intr_init(struct gpio *pio, enum EXTITrigger_TypeDef trigger_type)
 {
 	EXTI_InitTypeDef   EXTI_InitStructure;
 	GPIO_InitTypeDef   GPIO_InitStructure;
@@ -77,11 +77,34 @@ char plat_intr_init(struct gpio *pio)
 
 	EXTI_InitStructure.EXTI_Line = pio->pin;
 	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;  
+	EXTI_InitStructure.EXTI_Trigger = trigger_type;  
 	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 	EXTI_Init(&EXTI_InitStructure);
 
-	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
+	switch(pio->port){
+	    case 0:
+		NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;
+		break;
+	    case 1:
+		NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;
+		break;
+	    case 2:
+		NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;
+		break;
+	    case 3:
+		NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;
+		break;
+	    case 4:
+		NVIC_InitStructure.NVIC_IRQChannel = EXTI4_IRQn;
+		break;
+	    case 5:case 6:case 7:case 8:case 9:
+		NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
+		break;
+	    case 10:case 11:case 12:case 13:case 14:case 15:
+		NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
+		break;
+
+	}
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
