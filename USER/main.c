@@ -73,7 +73,7 @@ int main(void)
 	}
 	while (1)
 	{
-	    check_signal();
+	    poll_callbacks();
 	}
 }
 

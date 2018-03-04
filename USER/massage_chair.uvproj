@@ -500,76 +500,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>USBLIB</GroupName>
-          <Files>
-            <File>
-              <FileName>usb_core.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USB\USBLIB\src\usb_core.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_init.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USB\USBLIB\src\usb_init.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_int.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USB\USBLIB\src\usb_int.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_mem.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USB\USBLIB\src\usb_mem.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_regs.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USB\USBLIB\src\usb_regs.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_sil.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USB\USBLIB\src\usb_sil.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>USBConfig</GroupName>
-          <Files>
-            <File>
-              <FileName>hw_config.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USB\Mass_Storage\src\hw_config.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USB\Mass_Storage\src\usb_desc.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_endp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USB\Mass_Storage\src\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_istr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USB\Mass_Storage\src\usb_istr.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USB\Mass_Storage\src\usb_prop.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_pwr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USB\Mass_Storage\src\usb_pwr.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>USER</GroupName>
           <Files>
             <File>
@@ -583,14 +513,19 @@
               <FilePath>.\platform.c</FilePath>
             </File>
             <File>
-              <FileName>transmitter.c</FileName>
+              <FileName>controller.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\transmitter.c</FilePath>
+              <FilePath>controller.c</FilePath>
             </File>
             <File>
-              <FileName>ds311x.c</FileName>
+              <FileName>ble102.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\ds311x.c</FilePath>
+              <FilePath>.\ble102.c</FilePath>
+            </File>
+            <File>
+              <FileName>us_motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\us_motor.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -601,11 +536,6 @@
               <FileName>led.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\LED\led.c</FilePath>
-            </File>
-            <File>
-              <FileName>nrf24L01.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\nrf24l01\nrf24L01.c</FilePath>
             </File>
             <File>
               <FileName>spi.c</FileName>

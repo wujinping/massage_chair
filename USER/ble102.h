@@ -1,5 +1,8 @@
 #pragma once
 #include "platform.h"
+#define PACKET_SIZE_MAX	50
+#define XMIT_BUFFER_MAX	PACKET_SIZE_MAX
+#define RECV_BUFFER_MAX	PACKET_SIZE_MAX
 typedef int (*msg_callback)(void *, char *, uint16_t);
 typedef int (*msg_xmit)(void *, char *, uint16_t);
 enum MODULE_WORK_MODE {
@@ -10,6 +13,12 @@ enum MODULE_WORK_MODE {
     MODE_TRANSPARENT,
     MODE_IBEACON
 };
+struct usart_xmitter {
+	USART_TypeDef *usart;
+	int usart_baudrate;
+	msg_callback recv_cb;
+	msg_callback xmit_cb;
+};
 struct ble10x_device {
 	USART_TypeDef *usart;
 	struct gpio reset;
@@ -17,8 +26,11 @@ struct ble10x_device {
 	struct gpio wakeup;
 	int usart_baudrate;
 	enum MODULE_WORK_MODE work_mode;
+	struct usart_xmitter *usx;
+	char *xmit_buf;
+	char *recv_buf;
 	msg_callback msg_cb;
-	msg_xmit msg_x;
+	msg_callback msg_x;
 };
 struct ble10x_init_para {
 	USART_TypeDef *usart;
@@ -42,6 +54,14 @@ static int exit_command_mode(struct ble10x_device *dev);
 static int enter_command_mode(struct ble10x_device *dev);
 /* Not implemented yet ~ */
 static int init_module_gpios(struct ble10x_device *dev);
+
+int ble10x_usart_recv(struct ble10x_device *dev, char *buf, uint16_t len);
+
+int ble10x_usart_xmit(struct ble10x_device *dev, char *buf, uint16_t len);
+
+int setup_serial_port(struct ble10x_device *dev, struct ble10x_init_para *para);
+/* Setup ble102 usart transmission and reception buffers */
+static int setup_buffers(struct ble10x_device *dev);
 
 int ble10x_xmit_msg(struct ble10x_device *dev, char *msg, uint16_t msg_len);
 

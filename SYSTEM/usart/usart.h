@@ -7,7 +7,7 @@
 
 
 
-void USARTx_Init(uint32_t bound);
+int usart3_init(uint32_t bound);
 int usart_init(void);
 
 #endif

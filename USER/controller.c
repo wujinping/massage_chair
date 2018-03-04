@@ -28,6 +28,9 @@ int controller_init(struct controller **pctrler, struct controller_init_para *pa
 		print_err("%s: ble10x module initialization failed!\n", __func__);
 		return -1;		
 	}	
+	ctrler->lower_start = para->lower_start;
+	ctrler->speed_config = para->speed_config;
+	ctrler->upper_start_range = para->upper_start_range;
 	ble10x_set_recv_callback(ctrler->ble_dev, controller_handle_user_commands);
 	
 	*pctrler = ctrler;

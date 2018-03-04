@@ -84,7 +84,7 @@ unsigned char get_signal_count(void);
  
  *  @see timer_proc kill_timer
  */
-void add_signal(unsigned short type, unsigned char param, void* paramdata,
+void queue_callback(unsigned short type, unsigned char param, void* paramdata,
 							   psignal_proc proc, BOOL priority);
 
 /** 检查信号队列 \n
@@ -95,7 +95,7 @@ void add_signal(unsigned short type, unsigned char param, void* paramdata,
  *	@author:ding guopeng
  *	@date:2006~2007
  */
-void check_signal(void);
+void poll_callbacks(void);
 
 
 

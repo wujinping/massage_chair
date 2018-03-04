@@ -55,3 +55,5 @@ char plat_intr_init(struct gpio *pio, EXTITrigger_TypeDef trigger_type);
 void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high_pulse);
 	
 void pwm_set_high_pulse(TIM_TypeDef *tim, uint8_t channel, uint32_t high_pulse);
+
+int platform_timer_intr_init(uint32_t interval);
