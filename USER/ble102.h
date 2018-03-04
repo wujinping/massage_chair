@@ -1,7 +1,7 @@
 #pragma once
 #include "platform.h"
-typedef (*msg_callback)(void *, char *, uint16_t);
-typedef (*msg_xmit)(void *, char *, uint16_t);
+typedef int (*msg_callback)(void *, char *, uint16_t);
+typedef int (*msg_xmit)(void *, char *, uint16_t);
 enum MODULE_WORK_MODE {
     MODE_INVALID,
     MODE_COMMAND,

@@ -4,9 +4,7 @@
 long speed_to_high_pulse(struct us_motor_device *umd, enum motor_speed speed)
 {
 	long high_pulse = 0;	
-	if(speed <  || angle > ds311x->max_angle){
-		return -1;
-	}
+
 	switch(speed) {
 	    case SPEED_STATIC:
 		break;
@@ -27,8 +25,9 @@ long speed_to_high_pulse(struct us_motor_device *umd, enum motor_speed speed)
 
 int set_dir(struct us_motor_device *umd, enum motion_direction dir)
 {
-    struct gpio *pio = &(umd->dir);
-    if(!umd || !pio){
+    struct gpio *pdir1 = &(umd->dir1);
+	struct gpio *pdir2 = &(umd->dir2);
+    if(!umd || !pdir1 || !pdir2){
 	dev_err("%s:invalid argument.\n", __func__);
 	return (int)-1;
     }
@@ -37,14 +36,13 @@ int set_dir(struct us_motor_device *umd, enum motion_direction dir)
 }
 int set_range(struct us_motor_device *umd, enum motion_range range)
 {
-    struct gpio *pio = &(umd->dir);
-    if(!umd || !pio){
+    if(!umd){
 	dev_err("%s:invalid argument.\n", __func__);
 	return (int)-1;
     }
     umd->range = range;
 }
-int set_speed(struct us_motor_device *umd, enum speed_rank speed)
+int set_speed(struct us_motor_device *umd, enum motor_speed speed)
 {
     long high_pulse = speed_to_high_pulse(umd, speed);
     if(!umd || (high_pulse < 0)){
@@ -55,7 +53,7 @@ int set_speed(struct us_motor_device *umd, enum speed_rank speed)
     pwm_set_high_pulse(umd->tim, umd->channel, high_pulse);
     return 0;
 }
-int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para);
+int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
 {
 	struct us_motor_device *umd = calloc(sizeof(struct us_motor_device), 1);	
 	if(!pum || !para)
@@ -72,7 +70,7 @@ int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
 	    umd->dir1 = para->dir1;
 	    umd->dir2 = para->dir2;
 	    umd->upper_edge= para->upper_edge;
-	    umd->middle_point= para->middle_point;
+	    umd->middle_pos= para->middle_pos;
 	    umd->lower_edge= para->lower_edge;
 	    umd->upper_edge_reached = us_motor_upper_edge_reached;
 	    umd->middle_point_reached = us_motor_middle_point_reached;
@@ -81,21 +79,21 @@ int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
 
 	*pum = umd;	
 	/*  TODO: 修改speed对应PWM的high-pulse时间, 并且修改PWM的设置 */
-	pwm_init(umd->tim, umd->channel, &umd->power, speed_to_high_pulse(para->default_speed));
+	pwm_init(umd->tim, umd->channel, &umd->power,speed_to_high_pulse(umd, para->default_speed));
 
 	/* TODO: IO口初始化是否正确 */
 	if(MOTOR_FOR_BACK == umd->type){
 	    gpio_init(&umd->dir1);
 	    gpio_init(&umd->dir2);
 	    gpio_init(&umd->upper_edge);
-	    gpio_init(&umd->middle_point);
+	    gpio_init(&umd->middle_pos);
 	    gpio_init(&umd->lower_edge);
 	}
 	/* TODO: 增加限位检测输入点的中断初始化处理 */
 	if(MOTOR_FOR_BACK == umd->type){
-	    plat_intr_init(&umd->upper_edge);
-	    plat_intr_init(&umd->middle_point);
-	    plat_intr_init(&umd->lower_edge);
+	    plat_intr_init(&umd->upper_edge, EXTI_Trigger_Rising);
+	    plat_intr_init(&umd->middle_pos, EXTI_Trigger_Rising);
+	    plat_intr_init(&umd->lower_edge, EXTI_Trigger_Rising);
 	}
 	dev_info("%s:init succeeded.\n", __func__);
 	delay_ms(100);
@@ -104,22 +102,22 @@ int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
 }
 int us_motor_start(struct us_motor_device *umd)
 {
-    struct gpio *pio = &(umd->dir);
+    struct gpio *pio = &(umd->power);
     if(!umd || !pio){
 	dev_err("%s:invalid argument.\n", __func__);
 	return (int)-1;
     }
-    us_motor_set_speed(umd, umd->speed);
+    set_speed(umd, umd->speed);
     return 0;
 }
 int us_motor_stop(struct us_motor_device *umd)
 {
-    struct gpio *pio = &(umd->dir);
+    struct gpio *pio = &(umd->power);
     if(!umd || !pio){
 	dev_err("%s:invalid argument.\n", __func__);
 	return (int)-1;
     }
-    us_motor_set_speed(umd, SPEED_STATIC);
+    set_speed(umd, SPEED_STATIC);
     return 0;
 }
 
@@ -127,7 +125,6 @@ void us_motor_upper_edge_reached(struct us_motor_device *umd)
 {
     if(!umd || (MOTOR_FOR_BACK != umd->type)){
 	dev_err("%s:invalid argument.\n", __func__);
-	return (int)-1;
     }
     switch(umd->range){
 	case RANGE_UPPER_HALF:
@@ -139,13 +136,12 @@ void us_motor_upper_edge_reached(struct us_motor_device *umd)
 	default:
 	    break;
     }
-    return 0;
 }
 void us_motor_middle_point_reached(struct us_motor_device *umd)
 {
     if(!umd || (MOTOR_FOR_BACK != umd->type)){
 	dev_err("%s:invalid argument.\n", __func__);
-	return (int)-1;
+	return;
     }
     switch(umd->range){
 	case RANGE_UPPER_HALF:
@@ -157,13 +153,11 @@ void us_motor_middle_point_reached(struct us_motor_device *umd)
 	default:
 	    break;
     }
-    return 0;
 }
 void us_motor_lower_edge_reached(struct us_motor_device *umd)
 {
     if(!umd || (MOTOR_FOR_BACK != umd->type)){
 	dev_err("%s:invalid argument.\n", __func__);
-	return (int)-1;
     }
     switch(umd->range){
 	case RANGE_UPPER_HALF:
@@ -175,5 +169,4 @@ void us_motor_lower_edge_reached(struct us_motor_device *umd)
 	default:
 	    break;
     }
-    return 0;
 }

@@ -50,7 +50,7 @@ void plat_spi_write_read(struct spi_dev *spi, uint8_t *pdata, uint8_t unused);
 
 void platform_spi_init(struct spi_dev *spi, uint32_t freq);
 
-char plat_intr_init(struct gpio *pio);
+char plat_intr_init(struct gpio *pio, EXTITrigger_TypeDef trigger_type);
 
 void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high_pulse);
 	

@@ -1,10 +1,10 @@
 #include "stm32_config.h"
 #include "led.h"
 #include "hw_config.h"
-#include "transmitter.h"
+#include "controller.h"
 #include "signal.h"
 #include "us_motor.h"
-
+#include "ble102.h"
 /* Initial parameters for the motor of the back */
 struct us_motor_init_para bmotor = {
     MOTOR_FOR_BACK,
@@ -22,7 +22,7 @@ struct us_motor_init_para bmotor = {
 };
 /* Initial parameters for the motor of the under */
 struct us_motor_init_para umotor = {
-    MOTOR_FOR_UNDER,
+    MOTOR_FOR_LEG,
     TIM1,
     2,
     {GPIOA, GPIO_Pin_9, GPIO_Mode_Out_PP},
@@ -36,6 +36,9 @@ struct us_motor_init_para umotor = {
     0
 };
 struct controller_init_para para = {
+	{GPIOC, GPIO_Pin_13, GPIO_Mode_Out_PP},
+	{GPIOC, GPIO_Pin_15, GPIO_Mode_Out_PP},
+	{GPIOA, GPIO_Pin_1, GPIO_Mode_Out_PP},
 	&bmotor,
 	&umotor
 };
@@ -57,7 +60,6 @@ void hardware_failure()
 }
 int main(void)
 {
-	u32 i = 0;
 	int ret;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	
 	delay_init(72);	

@@ -1,5 +1,5 @@
 #include "platform.h"
-#include "ble10x.h"
+#include "ble102.h"
 
 const char *uuid_tx = "00001801-0000-1000-8000-00805f9b34fb";
 const char *uuid_rx = "00001800-0000-1000-8000-00805f9b34fb";
@@ -61,7 +61,7 @@ int ble10x_xmit_msg(struct ble10x_device *dev, char *msg, uint16_t msg_len)
 {
     return 0;
 }
-static int set_workmode(struct ble10x_device *dev, enum MODULE_WORK_MODE)
+static int set_workmode(struct ble10x_device *dev, enum MODULE_WORK_MODE mode)
 {
     return 0;
 }

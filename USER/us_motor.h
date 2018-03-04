@@ -58,6 +58,9 @@ struct us_motor_init_para{
 int set_dir(struct us_motor_device *umd, enum motion_direction dir);
 int set_speed(struct us_motor_device *umd, enum motor_speed speed);
 int set_range(struct us_motor_device *umd, enum motion_range range);
+void us_motor_lower_edge_reached(struct us_motor_device *umd);
+void us_motor_middle_point_reached(struct us_motor_device *umd);
+void us_motor_upper_edge_reached(struct us_motor_device *umd);
 
 /* Callable functions declaration*/
 int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para);

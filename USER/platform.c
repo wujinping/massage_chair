@@ -6,7 +6,7 @@
 /* */
 #include "platform.h"
 #include "stm32f10x.h"
-#include "transmitter.h"
+#include "controller.h"
 #ifdef	STM32F10X_HD
 
 extern struct controller *ctrler;
@@ -62,7 +62,7 @@ void platform_spi_init(struct spi_dev *spi, uint32_t freq)
 }
 
 /* FIXME: platform interrupt initialized here is irrelivant to the interrupt source configured by user. */
-char plat_intr_init(struct gpio *pio, enum EXTITrigger_TypeDef trigger_type)
+char plat_intr_init(struct gpio *pio, EXTITrigger_TypeDef trigger_type)
 {
 	EXTI_InitTypeDef   EXTI_InitStructure;
 	GPIO_InitTypeDef   GPIO_InitStructure;
@@ -81,7 +81,7 @@ char plat_intr_init(struct gpio *pio, enum EXTITrigger_TypeDef trigger_type)
 	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 	EXTI_Init(&EXTI_InitStructure);
 
-	switch(pio->port){
+	switch(pio->pin){
 	    case 0:
 		NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;
 		break;
@@ -256,7 +256,6 @@ void EXTI9_5_IRQHandler(void)
 	}	
 	if(EXTI_GetITStatus(EXTI_Line5))
 	{
-		transmitter_irq_handler(ctrler);
 		EXTI_ClearITPendingBit(EXTI_Line5);
 	}		
 	if(EXTI_GetITStatus(EXTI_Line8))

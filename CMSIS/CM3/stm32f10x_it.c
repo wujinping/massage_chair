@@ -28,69 +28,8 @@
 #include "led.h"
 #include "sys.h"
 
-//USB中断相关头文件
-#include "hw_config.h"
-#include "usb_lib.h"
-#include "usb_istr.h"
 
-/** @addtogroup STM32F10x_StdPeriph_Template
-  * @{
-  */
 
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-/* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
-
-/******************************************************************************/
-/*            Cortex-M3 Processor Exceptions Handlers                         */
-/******************************************************************************/
-
-/**********************************************************
-* 函数功能 ---> USB低优先级中断处理
-* 入口参数 ---> none
-* 返回数值 ---> none
-* 功能说明 ---> none
-**********************************************************/
-void USB_LP_CAN1_RX0_IRQHandler(void)
-{
-	USB_Istr();
-}
-/**********************************************************
-* 函数功能 ---> USB唤醒中断处理
-* 入口参数 ---> none
-* 返回数值 ---> none
-* 功能说明 ---> none
-**********************************************************/
-void USBWakeUp_IRQHandler(void)
-{
-	EXTI_ClearITPendingBit(EXTI_Line18);	//清除USB中断标志
-}
-/**********************************************************
-* 函数功能 ---> USB转串口中断处理
-* 入口参数 ---> none
-* 返回数值 ---> none
-* 功能说明 ---> none
-**********************************************************/
-
-/* 因为USART1用来下载程序或者调试时打印信息，所以不用 */
-#if USB_USARTx==2	/* 串口2 */
-	void USART2_IRQHandler(void)
-#elif USB_USARTx==3	/* 串口3 */
-	void USART3_IRQHandler(void)
-#elif USB_USARTx==4	/* 串口3 */
-	void UART4_IRQHandler(void)
-#elif USB_USARTx==5	/* 串口3 */
-	void UART5_IRQHandler(void)
-#endif
-{
-	if(USART_GetITStatus(USB_USART_n, USART_IT_RXNE) != RESET)	//串口接收到数据
-	{
-		USART_To_USB_Send_Data();	//发送数据到USB
-	}
-}
 
 
 /**

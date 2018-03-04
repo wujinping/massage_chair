@@ -1,0 +1,6 @@
+OBJ/
+*.o
+*.obj
+*.map
+tags
+cscope.*
