@@ -1,5 +1,6 @@
 
 #include "us_motor.h"
+#include "delay.h"
 
 long speed_to_high_pulse(struct us_motor_device *umd, enum motor_speed speed)
 {
@@ -7,12 +8,16 @@ long speed_to_high_pulse(struct us_motor_device *umd, enum motor_speed speed)
 
 	switch(speed) {
 	    case SPEED_STATIC:
+				high_pulse = 0;
 		break;
 	    case SPEED_SLOW:
+				high_pulse = 7000;
 		break;
 	    case SPEED_MEDIUM:
+				high_pulse = 15000;
 		break;
 	    case SPEED_FAST:
+				high_pulse = 20000;
 		break;
 	    default:
 		break;
@@ -32,7 +37,29 @@ int set_dir(struct us_motor_device *umd, enum motion_direction dir)
 	return (int)-1;
     }
     umd->dir = dir;
-
+		switch(dir){
+			case DIR_OFF:
+				gpio_set_value(&umd->dir1, 0);
+				gpio_set_value(&umd->dir2, 0);
+				delay_ms(5);
+				break;
+			case DIR_FORWARD:
+				gpio_set_value(&umd->dir1, 1);
+				gpio_set_value(&umd->dir2, 0);	
+				delay_ms(5);
+				break;
+			case DIR_BACKWARD:
+				gpio_set_value(&umd->dir1, 0);
+				gpio_set_value(&umd->dir2, 1);		
+				delay_ms(5);
+				break;	
+			default:
+				gpio_set_value(&umd->dir1, 0);
+				gpio_set_value(&umd->dir2, 0);	
+				delay_ms(5);
+				break;
+		}
+		return 0;
 }
 int set_range(struct us_motor_device *umd, enum motion_range range)
 {
@@ -76,7 +103,8 @@ int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
 	    umd->middle_point_reached = us_motor_middle_point_reached;
 	    umd->lower_edge_reached = us_motor_lower_edge_reached;
 	}
-
+	umd->set_speed = set_speed;
+	umd->set_range = set_range;
 	*pum = umd;	
 	/*  TODO: 修改speed对应PWM的high-pulse时间, 并且修改PWM的设置 */
 	pwm_init(umd->tim, umd->channel, &umd->power,speed_to_high_pulse(umd, para->default_speed));
@@ -128,10 +156,13 @@ void us_motor_upper_edge_reached(struct us_motor_device *umd)
     }
     switch(umd->range){
 	case RANGE_UPPER_HALF:
+		set_dir(umd, DIR_BACKWARD);
 	    break;
 	case RANGE_LOWER_HALF:
+		set_dir(umd, DIR_BACKWARD);
 	    break;
 	case RANGE_ENTIRE:
+		set_dir(umd, DIR_BACKWARD);
 	    break;
 	default:
 	    break;
@@ -145,10 +176,13 @@ void us_motor_middle_point_reached(struct us_motor_device *umd)
     }
     switch(umd->range){
 	case RANGE_UPPER_HALF:
+		set_dir(umd, DIR_FORWARD);
 	    break;
 	case RANGE_LOWER_HALF:
+		set_dir(umd, DIR_BACKWARD);
 	    break;
 	case RANGE_ENTIRE:
+		/* Entire range of massage, just ignore the middle point detection */
 	    break;
 	default:
 	    break;
@@ -161,10 +195,13 @@ void us_motor_lower_edge_reached(struct us_motor_device *umd)
     }
     switch(umd->range){
 	case RANGE_UPPER_HALF:
+		set_dir(umd, DIR_FORWARD);
 	    break;
 	case RANGE_LOWER_HALF:
+		set_dir(umd, DIR_FORWARD);
 	    break;
 	case RANGE_ENTIRE:
+		set_dir(umd, DIR_FORWARD);
 	    break;
 	default:
 	    break;

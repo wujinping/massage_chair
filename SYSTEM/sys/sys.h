@@ -124,18 +124,6 @@ void SYS_SoftReset(void);	//系统软复位
 void STM_JTAG_Set(uint32_t mode);	//JTAG模式设置
 
 
-uint8_t BCD_to_HEX(uint8_t BCD_Data);	//BCD码转为HEX
-
-uint8_t HEX_to_BCD(uint8_t HEX_Data);	//HEX码转为BCD
-
-uint16_t DX_to_HX(uint16_t DX_Data);	//10进制码转为16进制
-
-uint16_t HX_to_DX(uint16_t HX_Data);	//16进制码转为10进制
-
-
-//void Sqlist_Init(Sqlist *LIST);	//初始化数据列表
-//void Sqlist_DeInit(void);	//复位数据列表
-//void InsertElem(Sqlist *L,uint16_t i,ElemType item);	//向一个动态的数据列表插入一个元素
 
 
 #endif

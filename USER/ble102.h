@@ -1,5 +1,6 @@
 #pragma once
 #include "platform.h"
+#include "usart.h"
 #define PACKET_SIZE_MAX	50
 #define XMIT_BUFFER_MAX	PACKET_SIZE_MAX
 #define RECV_BUFFER_MAX	PACKET_SIZE_MAX
@@ -16,8 +17,8 @@ enum MODULE_WORK_MODE {
 struct usart_xmitter {
 	USART_TypeDef *usart;
 	int usart_baudrate;
-	msg_callback recv_cb;
-	msg_callback xmit_cb;
+	int (*recv_cb)(void *, char *, uint16_t);
+	int (*xmit_cb)(void *, char *, uint16_t);
 };
 struct ble10x_device {
 	USART_TypeDef *usart;

@@ -7,6 +7,7 @@
 #include "platform.h"
 #include "stm32f10x.h"
 #include "controller.h"
+#include "usart.h"
 #ifdef	STM32F10X_HD
 
 extern struct controller *ctrler;
@@ -65,7 +66,6 @@ void platform_spi_init(struct spi_dev *spi, uint32_t freq)
 char plat_intr_init(struct gpio *pio, EXTITrigger_TypeDef trigger_type)
 {
 	EXTI_InitTypeDef   EXTI_InitStructure;
-	GPIO_InitTypeDef   GPIO_InitStructure;
 	NVIC_InitTypeDef   NVIC_InitStructure;
 
 	/* Enable SYSCFG clock */
@@ -111,11 +111,10 @@ char plat_intr_init(struct gpio *pio, EXTITrigger_TypeDef trigger_type)
 	NVIC_Init(&NVIC_InitStructure);
 	
 	EXTI_ClearITPendingBit(pio->pin);
-	
+	return 0;
 }
 void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high_pulse)
 {
-	GPIO_InitTypeDef GPIO_InitStructure;
 	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	TIM_OCInitTypeDef  TIM_OCInitStructure;
 	
@@ -243,6 +242,14 @@ void pwm_set_high_pulse(TIM_TypeDef *tim, uint8_t channel, uint32_t high_pulse)
   TIM_ARRPreloadConfig(tim,ENABLE);	
 	
 }
+void EXTI1_IRQHandler(void)
+{
+		if(EXTI_GetITStatus(EXTI_Line1))
+	{
+		ctrler->speed_key_pressed(ctrler);
+		EXTI_ClearITPendingBit(EXTI_Line1);
+	}
+}
 /* CAUTION: irq handler number must be the same as the EXTI souce (i.e. if you connect Px2 as a intr souce, then use EXTI2_IRQHandler instead) */
 void EXTI9_5_IRQHandler(void)
 {
@@ -293,6 +300,7 @@ void EXTI15_10_IRQHandler(void)
 	}
 			if(EXTI_GetITStatus(EXTI_Line15))
 	{
+		ctrler->bottom_key_pressed(ctrler);
 		EXTI_ClearITPendingBit(EXTI_Line15);
 	}
 }
@@ -304,9 +312,9 @@ int platform_timer_intr_init(uint32_t interval)
 
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3,ENABLE); 
 
-	TIM_TimeBaseInitStructure.TIM_Prescaler=600-1; 
+	TIM_TimeBaseInitStructure.TIM_Prescaler=72-1; 
 	TIM_TimeBaseInitStructure.TIM_CounterMode=TIM_CounterMode_Up;
-	TIM_TimeBaseInitStructure.TIM_Period=5000-1;  
+	TIM_TimeBaseInitStructure.TIM_Period=10000-1;  
 	TIM_TimeBaseInitStructure.TIM_ClockDivision=TIM_CKD_DIV1; 
 
 	TIM_TimeBaseInit(TIM3,&TIM_TimeBaseInitStructure);
@@ -320,11 +328,23 @@ int platform_timer_intr_init(uint32_t interval)
 	NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 }
+int platform_timer_stop()
+{
+	TIM_Cmd(TIM3, DISABLE);
+}
+
+int platform_timer_refresh()
+{
+	TIM_SetCounter(TIM3, 0);
+	TIM_Cmd(TIM3, ENABLE);
+}
 
 void TIM3_IRQHandler(void)
 {
 	if(TIM_GetITStatus(TIM3,TIM_IT_Update)==SET) {
-	
+		/* Here we assume 1 full packet is received */
+		serial_packet_received();
+		platform_timer_stop();
 	}
 	TIM_ClearITPendingBit(TIM3,TIM_IT_Update); 
 }

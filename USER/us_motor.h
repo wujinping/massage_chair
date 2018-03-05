@@ -39,6 +39,8 @@ struct us_motor_device {
 	void (*upper_edge_reached)(struct us_motor_device *umd);
 	void (*middle_point_reached)(struct us_motor_device *umd);
 	void (*lower_edge_reached)(struct us_motor_device *umd);
+	int (*set_speed)(struct us_motor_device *umd, enum motor_speed speed);
+	int (*set_range)(struct us_motor_device *umd, enum motion_range range);
 };
 struct us_motor_init_para{
 	enum motor_type type;

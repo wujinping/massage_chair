@@ -63,7 +63,7 @@ int main(void)
 	int ret;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	
 	delay_init(72);	
-	USARTx_Init(9600);
+	//USARTx_Init(9600);
 	LED_Init();	
 	delay_ms(100);
 	init_signal_queue();	

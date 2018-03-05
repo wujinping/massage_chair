@@ -4,6 +4,16 @@
 #include "stm32f10x.h"
 #include "platform.h"
 #include "ble102.h"
+enum upper_state {
+	STATE_STATIC,
+	STATE_UPPER,
+	STATE_LOWER,
+	STATE_ENTIRE
+};
+enum lower_state {
+	STATE_OFF,
+	STATE_ON
+};
 struct controller {
     struct gpio upper_start_range;
     struct gpio lower_start;
@@ -11,6 +21,12 @@ struct controller {
     struct us_motor_device *bdev;
     struct us_motor_device *udev;
 	  struct ble10x_device *ble_dev;
+	enum upper_state ustate;
+	enum lower_state lstate;
+	enum motor_speed speed;
+		int (*back_key_pressed)(struct controller *ctrler);
+	int (*bottom_key_pressed)(struct controller *ctrler);
+	int (*speed_key_pressed)(struct controller *ctrler);
 };
 struct controller_init_para {
     struct gpio upper_start_range;
@@ -24,3 +40,6 @@ void xmit_list_push(u8 *packet, u16 packet_len);
 struct xmit_list * xmit_list_pop(void);
 
 int controller_init(struct controller **pctrler, struct controller_init_para *para);
+int controller_back_btn_pressed(struct controller *ctrler);
+int controller_bottom_btn_pressed(struct controller *ctrler);
+int controller_speed_btn_pressed(struct controller *ctrler);

@@ -6,8 +6,9 @@
 #include "sys.h" 
 
 
-
-int usart3_init(uint32_t bound);
+void serial_packet_received(void);
+	
+void uart3_init(u32 baud_rate);
 int usart_init(void);
 
 #endif

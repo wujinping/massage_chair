@@ -62,9 +62,10 @@ int setup_serial_port(struct ble10x_device *dev, struct ble10x_init_para *para)
     }
     dev->usx->xmit_cb = ble10x_usart_xmit;
     dev->usx->recv_cb = ble10x_usart_recv;
+		dev->usx->usart_baudrate = para->default_baudrate;
     /* TODO: First initialize the usart port with given parameters */
     /* FIXME:!!No enough time, here we do a hard initialization(take no given para into consideration) */	
-    usart3_init();
+    uart3_init(dev->usx->usart_baudrate);
     /* TODO: add timmer initialization here */
     platform_timer_intr_init(10);
 }
@@ -89,6 +90,13 @@ int setup_buffers(struct ble10x_device *dev)
 }
 int ble10x_usart_recv(struct ble10x_device *dev, char *buf, uint16_t len)
 {
+    if(!dev || !buf){
+	print_err("%s: Invalid parameter\n", __func__);
+	return -1;
+    }
+		/* First copy the received data into our internal buffer */
+		memcpy(dev->recv_buf, buf, len);
+		/* Now we try to decode */
     return 0;
 }
 int ble10x_usart_xmit(struct ble10x_device *dev, char *buf, uint16_t len)

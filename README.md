@@ -1,27 +1,21 @@
-##	Source code for remote cradle control of 'Linz' project
-### What is 'Linz'
-* We do not konw yet..., but the jobs I did in this project include `remote cradle control`, `pc control protocol` and part of the windows souce code for the system written in `LUA` language.
+##	Source code for Bluetooth controlled massage motor project
+### What 
+* THE source code is programmed for a Embedded control board which directly connects to a MOBILE device£¨could be an Andriod phone, an Apple iphone or some other device£©through a serial-bluetooth converter, it accepts commands from MOBILE device Applications, then interprets the commands into motion of the motors(back and bottom).
+* THE commands include `AUTHENTICATION`,`START` and `STOP` which are listed as below
 
-### What is remote cradle control
-* That is a control station that connects to PC, which accept commands from PC Applications, then interprets the commands into cradle turning angles(horizontal and vertical) and transmit to a remote cradle salve device, which accepts the angles and do the turning job.
-
-### PC control protocol
-* Currently only the following 2 types of commands that could interprets into corresponding turning angles.
+### Application control protocol
+* Currently only the following `2` types of commands that could be accepted and interpreted into corresponding motions.
 
 |Index|Command|Format|Usage|Example|
 |-|-|-|-|-|
-|1|WISAA|"WISAA,$Index,$H,$V*00\r\n"|`$Index` is a parameter that indicates which remote cradle this command is issued to.<br>	`$H` stands for the absolute horizontal angle that you want set for this cradle.<br>	`$V` standsfor the absolute vertical angle.|**"WISAA,2,120,90*00"** Sets the 2nd cradle angles to 120 degrees horizontal and 90 degrees vertical.  
-|2|WISAR|"WISAR,$Index,$H_R,$V_R*00\r\n"|`$Index` is a parameter that indicates which remote cradle this command is issued to.<br>	`$H_R` stands for the relative horizontal(relative to current angle) angle that you want set for this cradle.<br>	`$V_R` stands for the relative vertical angle.|**"WISAR,2,10,-10*00"**<br> Makes the 2nd cradle turns 10 degrees counter clock-wise horizontal and 10 degress clock-wise vertical. 
-### What We Do
-* In our project, the main funcion of this product is a realization of a command transmitter and a command receiver, the transmitter waits for commands from PC Applications and transmit the command through a 2.4G transceiver chip `nRF24L01`
-, the receiver however, controls the cradle to turning into specific angles when commands were received from the transmitter.
+|1|WISAA|"WAUTN,$String*00\r\n"|`$Sting` is a 32-bit ASCII encoded string which is encrypted with the unique ID of the MCU.<br>|**"WISAA,AF1C7042*00"** unlocks a device with a unique ID of `7E0E32E34403`
+|2|WISAR|"WSTAT,$Time*00\r\n"|`$Time` is a parameter that indicates for how much time in seconds the device counld keep running.|**"WSTAT,6000*00"**<br> set the device available for 100 minutes. 
+### How
+* In our project, the main funcion of this product is a realization of a command receiver and a motion controller , the receiver waits for commands from Mobile Applications and interprets to specific actions. 
 
-* In this project, the transmission and reception protocol are handled by an ARM
-based MCU (STM32F1xx),  the interface connects PC and the transmitter is through a USB device (which simulates our transmitter into a USB-SERIAL port).
+* In this project, the receiver, motion control and reception protocol are handled by an ARM-based MCU (STM32F1xx),  the Bluetooth BLE Protocol is processed by a SERIAL-Bluetooth chip `BLE102`, the motor is just controlled by a GPIO of the MCU .
 
-* An ``nRF24L01`` is used for RF transceiver, both on transmitter side and receiver side.
-
-* An `DS3115` and `DS3118` is used for the cradle, each serves as vertical digital servo and horizontal digital servo.
+* An ``BLE102`` is used for data receiver, and possibly data transmitter.
 
 ### Source Code
 The source code directories has such trees:

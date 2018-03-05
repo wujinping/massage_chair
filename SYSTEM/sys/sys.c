@@ -62,25 +62,11 @@ void MY_NVIC_SetVectorTable(uint32_t NVIC_VectTab,uint32_t Offset)
 	SCB->VTOR = NVIC_VectTab | (Offset & (uint32_t)0x1fffff80);//设置NVIC的向量表偏移寄存器
 	//用于标识向量表是在CODE区还是在RAM区
 }
-/**********************************************************
-* 函数功能 ---> 设置中断分组
-* 入口参数 ---> NVIC_PriorityGroup: 中断分组
-* 返回数值 ---> none
-* 功能说明 ---> 0 ~ 4组，共计有5组
-**********************************************************/
+
 void MY_NVIC_PriorityGroup_Config(uint32_t NVIC_PriorityGroup)
 {
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup);	//设置中断分组
-	
-//	uint32_t temp,temp1;
-//	
-//	temp1 = (~NVIC_PriorityGroup) & 0x00000007;//取后三位
-//	temp1 <<= 8;
-//	temp = SCB->AIRCR;  //读取先前的设置
-//	temp &= 0x0000f8ff; //清空先前分组
-//	temp |= 0x05fa0000; //写入钥匙
-//	temp |= temp1;	   
-//	SCB->AIRCR = temp;  //设置分组
+
 }
 /**********************************************************
 * 函数功能 ---> 设置中断分组优先级
@@ -110,22 +96,6 @@ void MY_NVIC_Init(uint8_t NVIC_PreemptionPriority,uint8_t NVIC_Subpriority,uint8
 
 	NVIC_Init(&NVIC_InitStructure);	//初始化中断
 	
-//	uint32_t temp;	
-//	uint8_t IPRADDR=NVIC_Channel/4;  //每组只能存4个,得到组地址 
-//	uint8_t IPROFFSET=NVIC_Channel%4;//在组内的偏移
-//	
-//	IPROFFSET = IPROFFSET*8 + 4;    //得到偏移的确切位置
-//	
-//	MY_NVIC_PriorityGroup_Config(NVIC_Group);//设置分组
-//	
-//	temp  = NVIC_PreemptionPriority << (4 - NVIC_Group);	//抢先优先级	  
-//	temp |= NVIC_Subpriority & (0x0f >> NVIC_Group);	//相应优先级
-//	temp &= 0xf;//取低四位
-
-//	if(NVIC_Channel < 32)	NVIC->ISER[0] |= 1 << NVIC_Channel;//使能中断位(要清除的话,相反操作就OK)
-//	else	NVIC->ISER[1]| |= 1 << (NVIC_Channel - 32); 
-//	
-//	NVIC->IPR[IPRADDR] |= temp << IPROFFSET;//设置响应优先级和抢断优先级  
 }
 /**********************************************************
 * 函数功能 ---> THUMB指令不支持汇编内联
@@ -241,99 +211,4 @@ void STM_Clock_Init(uint8_t pll)
 		tmp &= 0x03;
 	}    
 }
-/**********************************************************
-* 函数功能 ---> BCD码转为HEX
-* 入口参数 ---> BCD_Data：要转换的BCD数据
-* 返回数值 ---> HEX码
-* 功能说明 ---> none
-**********************************************************/	
-uint8_t BCD_to_HEX(uint8_t BCD_Data)
-{
-	return((BCD_Data / 10) << 4 | (BCD_Data % 10));
-}
-/**********************************************************
-* 函数功能 ---> HEX码转为BCD
-* 入口参数 ---> HEX_Data：要转换的BCD数据
-* 返回数值 ---> BCD码
-* 功能说明 ---> none
-**********************************************************/	
-uint8_t HEX_to_BCD(uint8_t HEX_Data)
-{
-	return((HEX_Data >> 4) * 10 + (HEX_Data & 0x0f));
-}
-/**********************************************************
-* 函数功能 ---> 10进制码转为16进制
-* 入口参数 ---> DX_Data：要转换的10进制数据
-* 返回数值 ---> 16进制
-* 功能说明 ---> none
-**********************************************************/
-uint16_t DX_to_HX(uint16_t DX_Data)
-{
-	return(((DX_Data/1000)<<12) | ((DX_Data%1000/100)<<8) | ((DX_Data%100/10)<<4) | (DX_Data%10));
-}
-/**********************************************************
-* 函数功能 ---> 16进制码转为10进制
-* 入口参数 ---> HX_Data：要转换的16进制数据
-* 返回数值 ---> 10进制
-* 功能说明 ---> none
-**********************************************************/
-uint16_t HX_to_DX(uint16_t HX_Data)
-{
-	return((HX_Data>>12)*1000+((HX_Data&0x0f00)>>8)*100+((HX_Data&0x00f0)>>4)*10+(HX_Data&0x000f));
-}	
-
-///**********************************************************
-//* 函数功能 ---> 初始化数据列表
-//* 入口参数 ---> *LIST：列表指针
-//* 返回数值 ---> none
-//* 功能说明 ---> none
-//**********************************************************/
-//void Sqlist_Init(Sqlist *LIST)
-//{
-//	LIST->elem = (uint16_t*)malloc(MaxSize * sizeof(ElemType));
-//	//分配一个长度为MaxSize * sizeof(ElemType)大小的内存空间
-//	if(!LIST->elem)	return;	//没有生成数据列表，直接退出
-//	//分配成功
-//	LIST->length = 0;	//列表中没内容
-//	LIST->listsize = MaxSize;	//该数据表占用内存大小为MaxSize（以sizeof(ElemType)为单位）
-//}
-///**********************************************************
-//* 函数功能 ---> 复位数据列表
-//* 入口参数 ---> none
-//* 返回数值 ---> none
-//* 功能说明 ---> none
-//**********************************************************/
-//void Sqlist_DeInit(void)
-//{
-//	Sqlist *list;
-//
-//	list->elem = 0;	//首地址清零
-//	list->length = 0;	//长度清零
-//	list->listsize = 0;	//列表大小为0
-//}
-///**********************************************************
-//* 函数功能 ---> 向一个动态的数据列表插入一个元素
-//* 入口参数 ---> *L：列表指针
-//*               i：列表中第i个位置插入元素
-//*               item：在第i个位置所插入的元素
-//* 返回数值 ---> none
-//* 功能说明 ---> none
-//**********************************************************/
-//void InsertElem(Sqlist *L,uint16_t i,ElemType item)
-//{	/* 向顺序列表*L的第i个位置插入元素item */
-//	ElemType *base, *insertPtr, *p;
-//
-//	if(i < 1 || i > L->length + 1)	return;	//非法插入
-//	if(L->length >= L->listsize)	//在数据列表最后一个位置插入元素
-//	{	//追加内存空间
-//		base = (ElemType*)realloc(L->elem,(L->listsize + 10) * sizeof(ElemType));
-//		L->elem = base;	//更新内存基地址
-//		L->listsize = L->listsize + 100;	//存储空间增加100个单元
-//	}
-//	insertPtr = &(L->Elem[i - 1]);	//insertPtr为插入位置
-//	for(p = &(L->elem[L->length - 1]);p >= insertPtr;p--)
-//		*(p + 1) = *p;	//将i - 1以后的元素顺序向后移一个元素位置
-//	*insertPtr = item;	//在第i个位置上插入元素item
-//	L->length++;	//表长加1
-//}
 
