@@ -363,7 +363,7 @@ I (..\CMSIS\STM32LIB\inc\stm32f10x_wwdg.h)(0x5A968D04)
 I (..\CMSIS\STM32LIB\inc\misc.h)(0x5A968D04)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x53463A44)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x53463A44)
-F (..\SYSTEM\usart\usart.c)(0x5A9D1D6C)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\CMSIS\CM3 -I..\CMSIS\CM3\CORE -I..\CMSIS\CM3\STARTUP -I..\CMSIS\STM32LIB\inc -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\USB\USBLIB\inc -I..\USB\Mass_Storage\inc -I..\HARDWARE -I..\HARDWARE\LED -I..\HARDWARE\nrf24l01 -I..\HARDWARE\signal -I..\HARDWARE\spi -I..\SYSTEM\signal-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\usart.o --omf_browse ..\obj\usart.crf --depend ..\obj\usart.d)
+F (..\SYSTEM\usart\usart.c)(0x5A9D4F9C)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\CMSIS\CM3 -I..\CMSIS\CM3\CORE -I..\CMSIS\CM3\STARTUP -I..\CMSIS\STM32LIB\inc -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\USB\USBLIB\inc -I..\USB\Mass_Storage\inc -I..\HARDWARE -I..\HARDWARE\LED -I..\HARDWARE\nrf24l01 -I..\HARDWARE\signal -I..\HARDWARE\spi -I..\SYSTEM\signal-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\usart.o --omf_browse ..\obj\usart.crf --depend ..\obj\usart.d)
 I (..\SYSTEM\usart\usart.h)(0x5A9D1D39)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x53463A44)
 I (..\SYSTEM\sys\sys.h)(0x5A9D11F0)
@@ -400,13 +400,13 @@ I (..\USER\controller.h)(0x5A9D3FBF)
 I (..\USER\def.h)(0x5A9B47D3)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x53463A44)
 I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x53463A44)
-I (..\USER\us_motor.h)(0x5A9D3C49)
+I (..\USER\us_motor.h)(0x5A9D420E)
 I (..\USER\platform.h)(0x5A9D3F8C)
 I (..\HARDWARE\spi\spi.h)(0x5A968D04)
 I (..\USER\ble102.h)(0x5A9D17BF)
 F (..\SYSTEM\signal\signal.c)(0x5A9BB6A0)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\CMSIS\CM3 -I..\CMSIS\CM3\CORE -I..\CMSIS\CM3\STARTUP -I..\CMSIS\STM32LIB\inc -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\USB\USBLIB\inc -I..\USB\Mass_Storage\inc -I..\HARDWARE -I..\HARDWARE\LED -I..\HARDWARE\nrf24l01 -I..\HARDWARE\signal -I..\HARDWARE\spi -I..\SYSTEM\signal-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\signal.o --omf_browse ..\obj\signal.crf --depend ..\obj\signal.d)
 I (..\SYSTEM\signal\signal.h)(0x5A9BB69A)
-F (.\main.c)(0x5A9D3FD9)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\CMSIS\CM3 -I..\CMSIS\CM3\CORE -I..\CMSIS\CM3\STARTUP -I..\CMSIS\STM32LIB\inc -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\USB\USBLIB\inc -I..\USB\Mass_Storage\inc -I..\HARDWARE -I..\HARDWARE\LED -I..\HARDWARE\nrf24l01 -I..\HARDWARE\signal -I..\HARDWARE\spi -I..\SYSTEM\signal-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
+F (.\main.c)(0x5A9D4F84)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\CMSIS\CM3 -I..\CMSIS\CM3\CORE -I..\CMSIS\CM3\STARTUP -I..\CMSIS\STM32LIB\inc -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\USB\USBLIB\inc -I..\USB\Mass_Storage\inc -I..\HARDWARE -I..\HARDWARE\LED -I..\HARDWARE\nrf24l01 -I..\HARDWARE\signal -I..\HARDWARE\spi -I..\SYSTEM\signal-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
 I (..\HARDWARE\stm32_config.h)(0x5A968D04)
 I (..\SYSTEM\sys\sys.h)(0x5A9D11F0)
 I (..\CMSIS\CM3\stm32f10x.h)(0x5A968D04)
@@ -450,12 +450,12 @@ I (..\USB\Mass_Storage\inc\usb_conf.h)(0x5A968D04)
 I (controller.h)(0x5A9D3FBF)
 I (def.h)(0x5A9B47D3)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x53463A44)
-I (us_motor.h)(0x5A9D3C49)
+I (us_motor.h)(0x5A9D420E)
 I (platform.h)(0x5A9D3F8C)
 I (..\HARDWARE\spi\spi.h)(0x5A968D04)
 I (ble102.h)(0x5A9D17BF)
 I (..\HARDWARE\signal\signal.h)(0x5A9BB66C)
-F (.\platform.c)(0x5A9D401E)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\CMSIS\CM3 -I..\CMSIS\CM3\CORE -I..\CMSIS\CM3\STARTUP -I..\CMSIS\STM32LIB\inc -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\USB\USBLIB\inc -I..\USB\Mass_Storage\inc -I..\HARDWARE -I..\HARDWARE\LED -I..\HARDWARE\nrf24l01 -I..\HARDWARE\signal -I..\HARDWARE\spi -I..\SYSTEM\signal-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\platform.o --omf_browse ..\obj\platform.crf --depend ..\obj\platform.d)
+F (.\platform.c)(0x5A9D41C9)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\CMSIS\CM3 -I..\CMSIS\CM3\CORE -I..\CMSIS\CM3\STARTUP -I..\CMSIS\STM32LIB\inc -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\USB\USBLIB\inc -I..\USB\Mass_Storage\inc -I..\HARDWARE -I..\HARDWARE\LED -I..\HARDWARE\nrf24l01 -I..\HARDWARE\signal -I..\HARDWARE\spi -I..\SYSTEM\signal-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\platform.o --omf_browse ..\obj\platform.crf --depend ..\obj\platform.d)
 I (platform.h)(0x5A9D3F8C)
 I (def.h)(0x5A9B47D3)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x53463A44)
@@ -493,7 +493,7 @@ I (..\CMSIS\STM32LIB\inc\misc.h)(0x5A968D04)
 I (..\HARDWARE\spi\spi.h)(0x5A968D04)
 I (..\SYSTEM\sys\sys.h)(0x5A9D11F0)
 I (controller.h)(0x5A9D3FBF)
-I (us_motor.h)(0x5A9D3C49)
+I (us_motor.h)(0x5A9D420E)
 I (ble102.h)(0x5A9D17BF)
 I (..\SYSTEM\usart\usart.h)(0x5A9D1D39)
 F (controller.c)(0x5A9D3F9B)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\CMSIS\CM3 -I..\CMSIS\CM3\CORE -I..\CMSIS\CM3\STARTUP -I..\CMSIS\STM32LIB\inc -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\USB\USBLIB\inc -I..\USB\Mass_Storage\inc -I..\HARDWARE -I..\HARDWARE\LED -I..\HARDWARE\nrf24l01 -I..\HARDWARE\signal -I..\HARDWARE\spi -I..\SYSTEM\signal-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\controller.o --omf_browse ..\obj\controller.crf --depend ..\obj\controller.d)
@@ -503,7 +503,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x53463A44)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x53463A44)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x53463A44)
 I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x53463A44)
-I (us_motor.h)(0x5A9D3C49)
+I (us_motor.h)(0x5A9D420E)
 I (platform.h)(0x5A9D3F8C)
 I (..\CMSIS\CM3\stm32f10x.h)(0x5A968D04)
 I (..\CMSIS\CM3\CORE\core_cm3.h)(0x5A968D04)
@@ -577,8 +577,8 @@ I (..\HARDWARE\spi\spi.h)(0x5A968D04)
 I (..\SYSTEM\sys\sys.h)(0x5A9D11F0)
 I (ble102.h)(0x5A9D17BF)
 I (..\SYSTEM\usart\usart.h)(0x5A9D1D39)
-F (.\us_motor.c)(0x5A9D3C69)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\CMSIS\CM3 -I..\CMSIS\CM3\CORE -I..\CMSIS\CM3\STARTUP -I..\CMSIS\STM32LIB\inc -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\USB\USBLIB\inc -I..\USB\Mass_Storage\inc -I..\HARDWARE -I..\HARDWARE\LED -I..\HARDWARE\nrf24l01 -I..\HARDWARE\signal -I..\HARDWARE\spi -I..\SYSTEM\signal-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\us_motor.o --omf_browse ..\obj\us_motor.crf --depend ..\obj\us_motor.d)
-I (us_motor.h)(0x5A9D3C49)
+F (.\us_motor.c)(0x5A9D4214)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\CMSIS\CM3 -I..\CMSIS\CM3\CORE -I..\CMSIS\CM3\STARTUP -I..\CMSIS\STM32LIB\inc -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\USB\USBLIB\inc -I..\USB\Mass_Storage\inc -I..\HARDWARE -I..\HARDWARE\LED -I..\HARDWARE\nrf24l01 -I..\HARDWARE\signal -I..\HARDWARE\spi -I..\SYSTEM\signal-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I C:\Keil_v5\ARM\Inc\ST\STM32F10x-DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\us_motor.o --omf_browse ..\obj\us_motor.crf --depend ..\obj\us_motor.d)
+I (us_motor.h)(0x5A9D420E)
 I (platform.h)(0x5A9D3F8C)
 I (def.h)(0x5A9B47D3)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x53463A44)

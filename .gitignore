@@ -6,4 +6,4 @@ tags
 cscope.*
 *.bak
 *.map
-
+*.dep

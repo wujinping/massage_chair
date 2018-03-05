@@ -112,7 +112,7 @@ void USART3_IRQHandler(void)
     if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)  
     {
 			/* TODO: clear the TIMER counter when a new char is received */
-			platfor_timer_refresh();
+			platform_timer_refresh();
 			recv_char =USART_ReceiveData(USART3);
 			if(serial_count < 50){
 				serial_buf[serial_count++] = recv_char;

@@ -5,6 +5,8 @@
 #include "signal.h"
 #include "us_motor.h"
 #include "ble102.h"
+
+struct controller *ctrler;
 /* Initial parameters for the motor of the back */
 struct us_motor_init_para bmotor = {
     MOTOR_FOR_BACK,
@@ -35,15 +37,24 @@ struct us_motor_init_para umotor = {
     0,
     0
 };
+
+struct ble10x_init_para ble10x_para = {
+	USART3,
+	{GPIOA, GPIO_Pin_6, GPIO_Mode_IPD},
+	{GPIOA, GPIO_Pin_5, GPIO_Mode_IPD},
+	{GPIOA, GPIO_Pin_4, GPIO_Mode_IPD},	
+	9600,
+	MODE_SLAVE,
+	0
+};
 struct controller_init_para para = {
 	{GPIOC, GPIO_Pin_13, GPIO_Mode_Out_PP},
 	{GPIOC, GPIO_Pin_15, GPIO_Mode_Out_PP},
 	{GPIOA, GPIO_Pin_1, GPIO_Mode_Out_PP},
 	&bmotor,
-	&umotor
+	&umotor,
+	&ble10x_para
 };
-
-struct controller *ctrler;
 
 void hardware_failure()
 {

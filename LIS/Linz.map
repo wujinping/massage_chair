@@ -29,7 +29,7 @@ Section Cross References
     usart.o(.text) refers to stm32f10x_gpio.o(.text) for GPIO_Init
     usart.o(.text) refers to misc.o(.text) for NVIC_Init
     usart.o(.text) refers to memseta.o(.text) for __aeabi_memclr
-    usart.o(.text) refers to platform.o(.text) for platfor_timer_refresh
+    usart.o(.text) refers to platform.o(.text) for platform_timer_refresh
     usart.o(.text) refers to main.o(.data) for ctrler
     usart.o(.text) refers to usart.o(.data) for serial_count
     usart.o(.text) refers to usart.o(.bss) for serial_buf
@@ -562,13 +562,13 @@ Image Symbol Table
     fac_us                                   0x20000028   Data           1  delay.o(.data)
     fac_ms                                   0x2000002a   Data           2  delay.o(.data)
     .data                                    0x2000002c   Section        8  usart.o(.data)
-    .data                                    0x20000034   Section      168  main.o(.data)
-    .data                                    0x200000dc   Section        4  mvars.o(.data)
-    .data                                    0x200000e0   Section        4  mvars.o(.data)
-    .bss                                     0x200000e4   Section       50  usart.o(.bss)
-    .bss                                     0x20000118   Section     3204  signal.o(.bss)
-    HEAP                                     0x20000da0   Section      512  startup_stm32f10x_hd.o(HEAP)
-    STACK                                    0x20000fa0   Section     1024  startup_stm32f10x_hd.o(STACK)
+    .data                                    0x20000034   Section      208  main.o(.data)
+    .data                                    0x20000104   Section        4  mvars.o(.data)
+    .data                                    0x20000108   Section        4  mvars.o(.data)
+    .bss                                     0x2000010c   Section       50  usart.o(.bss)
+    .bss                                     0x20000140   Section     3204  signal.o(.bss)
+    HEAP                                     0x20000dc8   Section      512  startup_stm32f10x_hd.o(HEAP)
+    STACK                                    0x20000fc8   Section     1024  startup_stm32f10x_hd.o(STACK)
 
     Global Symbols
 
@@ -950,8 +950,8 @@ Image Symbol Table
     EXTI9_5_IRQHandler                       0x08002c35   Thumb Code    68  platform.o(.text)
     EXTI15_10_IRQHandler                     0x08002c79   Thumb Code   172  platform.o(.text)
     platform_timer_intr_init                 0x08002d25   Thumb Code    98  platform.o(.text)
-    platfor_timer_stop                       0x08002d87   Thumb Code    12  platform.o(.text)
-    platfor_timer_refresh                    0x08002d93   Thumb Code    20  platform.o(.text)
+    platform_timer_stop                      0x08002d87   Thumb Code    12  platform.o(.text)
+    platform_timer_refresh                   0x08002d93   Thumb Code    20  platform.o(.text)
     TIM3_IRQHandler                          0x08002da7   Thumb Code    32  platform.o(.text)
     controller_handle_user_commands          0x08002dd1   Thumb Code     6  controller.o(.text)
     controller_speed_btn_pressed             0x08002dd7   Thumb Code   164  controller.o(.text)
@@ -1014,15 +1014,16 @@ Image Symbol Table
     __stdout                                 0x20000030   Data           4  usart.o(.data)
     bmotor                                   0x20000034   Data          64  main.o(.data)
     umotor                                   0x20000074   Data          64  main.o(.data)
-    para                                     0x200000b4   Data          36  main.o(.data)
-    ctrler                                   0x200000d8   Data           4  main.o(.data)
-    __microlib_freelist                      0x200000dc   Data           4  mvars.o(.data)
-    __microlib_freelist_initialised          0x200000e0   Data           4  mvars.o(.data)
-    serial_buf                               0x200000e4   Data          50  usart.o(.bss)
-    g_signal_queue                           0x20000118   Data        3204  signal.o(.bss)
-    __heap_base                              0x20000da0   Data           0  startup_stm32f10x_hd.o(HEAP)
-    __heap_limit                             0x20000fa0   Data           0  startup_stm32f10x_hd.o(HEAP)
-    __initial_sp                             0x200013a0   Data           0  startup_stm32f10x_hd.o(STACK)
+    ble10x_para                              0x200000b4   Data          40  main.o(.data)
+    para                                     0x200000dc   Data          36  main.o(.data)
+    ctrler                                   0x20000100   Data           4  main.o(.data)
+    __microlib_freelist                      0x20000104   Data           4  mvars.o(.data)
+    __microlib_freelist_initialised          0x20000108   Data           4  mvars.o(.data)
+    serial_buf                               0x2000010c   Data          50  usart.o(.bss)
+    g_signal_queue                           0x20000140   Data        3204  signal.o(.bss)
+    __heap_base                              0x20000dc8   Data           0  startup_stm32f10x_hd.o(HEAP)
+    __heap_limit                             0x20000fc8   Data           0  startup_stm32f10x_hd.o(HEAP)
+    __initial_sp                             0x200013c8   Data           0  startup_stm32f10x_hd.o(STACK)
 
 
 
@@ -1032,7 +1033,7 @@ Memory Map of the image
 
   Image Entry point : 0x08000131
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00004118, Max: 0x00080000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00004140, Max: 0x00080000, ABSOLUTE)
 
     Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x00004034, Max: 0x00080000, ABSOLUTE)
 
@@ -1101,7 +1102,7 @@ Memory Map of the image
     0x08004014   0x00000020   Data   RO          832    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Base: 0x20000000, Size: 0x000013a0, Max: 0x00010000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Base: 0x20000000, Size: 0x000013c8, Max: 0x00010000, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -1109,15 +1110,15 @@ Memory Map of the image
     0x20000014   0x00000014   Data   RW          229    .data               stm32f10x_rcc.o
     0x20000028   0x00000004   Data   RW          255    .data               delay.o
     0x2000002c   0x00000008   Data   RW          286    .data               usart.o
-    0x20000034   0x000000a8   Data   RW          355    .data               main.o
-    0x200000dc   0x00000004   Data   RW          828    .data               mc_w.l(mvars.o)
-    0x200000e0   0x00000004   Data   RW          829    .data               mc_w.l(mvars.o)
-    0x200000e4   0x00000032   Zero   RW          285    .bss                usart.o
-    0x20000116   0x00000002   PAD
-    0x20000118   0x00000c84   Zero   RW          337    .bss                signal.o
-    0x20000d9c   0x00000004   PAD
-    0x20000da0   0x00000200   Zero   RW           18    HEAP                startup_stm32f10x_hd.o
-    0x20000fa0   0x00000400   Zero   RW           17    STACK               startup_stm32f10x_hd.o
+    0x20000034   0x000000d0   Data   RW          355    .data               main.o
+    0x20000104   0x00000004   Data   RW          828    .data               mc_w.l(mvars.o)
+    0x20000108   0x00000004   Data   RW          829    .data               mc_w.l(mvars.o)
+    0x2000010c   0x00000032   Zero   RW          285    .bss                usart.o
+    0x2000013e   0x00000002   PAD
+    0x20000140   0x00000c84   Zero   RW          337    .bss                signal.o
+    0x20000dc4   0x00000004   PAD
+    0x20000dc8   0x00000200   Zero   RW           18    HEAP                startup_stm32f10x_hd.o
+    0x20000fc8   0x00000400   Zero   RW           17    STACK               startup_stm32f10x_hd.o
 
 
 ==============================================================================
@@ -1132,9 +1133,9 @@ Image component sizes
          0          0          0          0          0       4304   core_cm3.o
        208          8          0          4          0       1003   delay.o
         80          8          0          0          0        479   led.o
-       104         18          0        168          0       4528   main.o
+       104         18          0        208          0       4584   main.o
        220         22          0          0          0       1769   misc.o
-      1444         58          0          0          0       4661   platform.o
+      1444         58          0          0          0       4667   platform.o
        264          4          0          0       3204       2532   signal.o
        464         58          9          0          0       1596   spi.o
         36          8        304          0       1536        804   startup_stm32f10x_hd.o
@@ -1148,10 +1149,10 @@ Image component sizes
        634         52          0          0          0       2960   sys.o
        480         38          0         20          0       1767   system_stm32f10x.o
        880         58         24          0          0       3547   us_motor.o
-       484         28          0          8         50       7395   usart.o
+       484         28          0          8         50       7407   usart.o
 
     ----------------------------------------------------------------------
-     14212        856        568        220       4796     355702   Object Totals
+     14212        856        568        260       4796     355776   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          6          0          2          0          6          0   (incl. Padding)
 
@@ -1199,15 +1200,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     15868        948        568        228       4796     354338   Grand Totals
-     15868        948        568        228       4796     354338   ELF Image Totals
-     15868        948        568        228          0          0   ROM Totals
+     15868        948        568        268       4796     354412   Grand Totals
+     15868        948        568        268       4796     354412   ELF Image Totals
+     15868        948        568        268          0          0   ROM Totals
 
 ==============================================================================
 
     Total RO  Size (Code + RO Data)                16436 (  16.05kB)
-    Total RW  Size (RW Data + ZI Data)              5024 (   4.91kB)
-    Total ROM Size (Code + RO Data + RW Data)      16664 (  16.27kB)
+    Total RW  Size (RW Data + ZI Data)              5064 (   4.95kB)
+    Total ROM Size (Code + RO Data + RW Data)      16704 (  16.31kB)
 
 ==============================================================================
 
