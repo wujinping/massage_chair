@@ -5,3 +5,5 @@ OBJ/
 tags
 cscope.*
 *.bak
+*.map
+

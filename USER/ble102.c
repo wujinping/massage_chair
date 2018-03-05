@@ -23,10 +23,10 @@ int ble10x_device_init(struct ble10x_device **pdev, struct ble10x_init_para *par
     *pdev = dev;
     /* TODO: Initialize the GPIOs of module, because of a lack of time, we just ignore them */
     init_module_gpios(dev);
-		/* Initialize the USART port */
-		setup_serial_port(dev, para);
-		/* TODO: Initialize transmit and recv buffer */
-		setup_buffers(dev);
+    /* Initialize the USART port */
+    setup_serial_port(dev, para);
+    /* TODO: Initialize transmit and recv buffer */
+    setup_buffers(dev);
     if(para->init_everytime){
 	/* Now we try to enter the command mode see if the module works */
 	ret = enter_command_mode(dev);
@@ -51,22 +51,22 @@ int ble10x_device_init(struct ble10x_device **pdev, struct ble10x_init_para *par
 }
 int setup_serial_port(struct ble10x_device *dev, struct ble10x_init_para *para)
 {
-	    if(!dev){
+    if(!dev){
 	print_err("%s: Invalid parameter\n", __func__);
 	return -1;
     }
-			dev->usx = calloc(sizeof(struct usart_xmitter), 1);
-		if(!dev->usx){
-			print_err("%s: Not enough memory\n", __func__);
-			return -1;
-		}
-		dev->usx->xmit_cb = ble10x_usart_xmit;
-		dev->usx->recv_cb = ble10x_usart_recv;
-		/* TODO: First initialize the usart port with given parameters */
-		/* FIXME:!!No enough time, here we do a hard initialization(take no given para into consideration) */	
-		usart3_init();
-		/* TODO: add timmer initialization here */
-		platform_timer_intr_init(10);
+    dev->usx = calloc(sizeof(struct usart_xmitter), 1);
+    if(!dev->usx){
+	print_err("%s: Not enough memory\n", __func__);
+	return -1;
+    }
+    dev->usx->xmit_cb = ble10x_usart_xmit;
+    dev->usx->recv_cb = ble10x_usart_recv;
+    /* TODO: First initialize the usart port with given parameters */
+    /* FIXME:!!No enough time, here we do a hard initialization(take no given para into consideration) */	
+    usart3_init();
+    /* TODO: add timmer initialization here */
+    platform_timer_intr_init(10);
 }
 int setup_buffers(struct ble10x_device *dev)
 {
@@ -74,26 +74,26 @@ int setup_buffers(struct ble10x_device *dev)
 	print_err("%s: Invalid parameter\n", __func__);
 	return -1;
     }
-		dev->xmit_buf = calloc(XMIT_BUFFER_MAX, 1);
-		if(!dev->xmit_buf){
-			dev_err("%s: failed to allocate buffer for transmission.\n", __func__);
-			return -1;
-		}
-				dev->recv_buf = calloc(RECV_BUFFER_MAX, 1);
-		if(!dev->recv_buf){
-			dev_err("%s: failed to allocate buffer for reception.\n", __func__);
-			return -1;
-		}
-		dev_info("%s: buffer allocation succeed.\n", __func__);
-		return 0;
+    dev->xmit_buf = calloc(XMIT_BUFFER_MAX, 1);
+    if(!dev->xmit_buf){
+	dev_err("%s: failed to allocate buffer for transmission.\n", __func__);
+	return -1;
+    }
+    dev->recv_buf = calloc(RECV_BUFFER_MAX, 1);
+    if(!dev->recv_buf){
+	dev_err("%s: failed to allocate buffer for reception.\n", __func__);
+	return -1;
+    }
+    dev_info("%s: buffer allocation succeed.\n", __func__);
+    return 0;
 }
 int ble10x_usart_recv(struct ble10x_device *dev, char *buf, uint16_t len)
 {
-	return 0;
+    return 0;
 }
 int ble10x_usart_xmit(struct ble10x_device *dev, char *buf, uint16_t len)
 {
-	return 0;
+    return 0;
 }
 int ble10x_set_recv_callback(struct ble10x_device *dev, msg_callback callback)
 {
