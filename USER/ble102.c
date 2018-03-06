@@ -5,6 +5,7 @@ const char *uuid_tx = "00001801-0000-1000-8000-00805f9b34fb";
 const char *uuid_rx = "00001800-0000-1000-8000-00805f9b34fb";
 const char *uuid_serial = "0003cdd0-0000-1000-8000-00805f9b0131";
 
+extern struct controller *ctrler;
 int ble10x_device_init(struct ble10x_device **pdev, struct ble10x_init_para *para)
 {
     int ret = -1;
@@ -90,13 +91,18 @@ int setup_buffers(struct ble10x_device *dev)
 }
 int ble10x_usart_recv(struct ble10x_device *dev, char *buf, uint16_t len)
 {
-    if(!dev || !buf){
+    if(!dev || !buf || len <= 5){
 	print_err("%s: Invalid parameter\n", __func__);
 	return -1;
     }
-		/* First copy the received data into our internal buffer */
-		memcpy(dev->recv_buf, buf, len);
-		/* Now we try to decode */
+    /* First copy the received data into our internal buffer */
+    memcpy(dev->recv_buf, buf, len);
+    /* Now we try to decode the received string, if it's the AT command response, handle it here */
+    if(!strncmp(dev->recv_buf, "\r\n+", 3)){
+    }
+    else{
+	dev->msg_cb(ctrler, dev->recv_buf, len);
+    }
     return 0;
 }
 int ble10x_usart_xmit(struct ble10x_device *dev, char *buf, uint16_t len)

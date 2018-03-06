@@ -11,6 +11,7 @@
 #ifdef	STM32F10X_HD
 
 extern struct controller *ctrler;
+uint32_t platform_counter = 0;
 
 uint8_t mod_2(uint16_t value)
 {
@@ -312,9 +313,9 @@ int platform_timer_intr_init(uint32_t interval)
 
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3,ENABLE); 
 
-	TIM_TimeBaseInitStructure.TIM_Prescaler=72-1; 
+	TIM_TimeBaseInitStructure.TIM_Prescaler=720-1; 
 	TIM_TimeBaseInitStructure.TIM_CounterMode=TIM_CounterMode_Up;
-	TIM_TimeBaseInitStructure.TIM_Period=10000-1;  
+	TIM_TimeBaseInitStructure.TIM_Period=100*interval-1;  
 	TIM_TimeBaseInitStructure.TIM_ClockDivision=TIM_CKD_DIV1; 
 
 	TIM_TimeBaseInit(TIM3,&TIM_TimeBaseInitStructure);
@@ -339,14 +340,48 @@ int platform_timer_refresh()
 	TIM_Cmd(TIM3, ENABLE);
 }
 
+int platform_counter_init(uint32_t interval)
+{
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
+    NVIC_InitTypeDef NVIC_InitStructure;
+
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4,ENABLE); 
+
+    TIM_TimeBaseInitStructure.TIM_Prescaler=720-1; 
+    TIM_TimeBaseInitStructure.TIM_CounterMode=TIM_CounterMode_Up;
+    TIM_TimeBaseInitStructure.TIM_Period=100*interval-1;  
+    TIM_TimeBaseInitStructure.TIM_ClockDivision=TIM_CKD_DIV1; 
+
+    TIM_TimeBaseInit(TIM4,&TIM_TimeBaseInitStructure);
+
+    TIM_ITConfig(TIM4,TIM_IT_Update,ENABLE); 
+    TIM_Cmd(TIM4,ENABLE);
+
+    NVIC_InitStructure.NVIC_IRQChannel=TIM4_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0x01;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority=0x03;
+    NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+}
+uint32_t platform_get_counter(void)
+{
+    return platform_counter;
+}
 void TIM3_IRQHandler(void)
 {
-	if(TIM_GetITStatus(TIM3,TIM_IT_Update)==SET) {
-		/* Here we assume 1 full packet is received */
-		serial_packet_received();
-		platform_timer_stop();
-	}
-	TIM_ClearITPendingBit(TIM3,TIM_IT_Update); 
+    if(TIM_GetITStatus(TIM3,TIM_IT_Update)==SET) {
+	/* Here we assume 1 full packet is received */
+	serial_packet_received();
+	platform_timer_stop();
+    }
+    TIM_ClearITPendingBit(TIM3,TIM_IT_Update); 
+}
+void TIM4_IRQHandler(void)
+{
+    if(TIM_GetITStatus(TIM4,TIM_IT_Update)==SET) {
+	++platform_counter;
+    }
+    TIM_ClearITPendingBit(TIM4,TIM_IT_Update); 
 }
 #else
 

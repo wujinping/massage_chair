@@ -15,9 +15,16 @@ enum lower_state {
 	STATE_ON
 };
 struct controller {
+    int unlocked;
+    int valid_sec;
     struct gpio upper_start_range;
     struct gpio lower_start;
     struct gpio speed_config;
+    struct gpio beeper;
+	struct gpio speed_led;
+	struct gpio upper_led1;
+	struct gpio upper_led2;
+	struct gpio lower_led;
     struct us_motor_device *bdev;
     struct us_motor_device *udev;
 	  struct ble10x_device *ble_dev;
@@ -32,12 +39,18 @@ struct controller_init_para {
     struct gpio upper_start_range;
     struct gpio lower_start;
     struct gpio speed_config;
+    struct gpio beeper;
+	struct gpio speed_led;
+	struct gpio upper_led1;
+	struct gpio upper_led2;
+	struct gpio lower_led;
     struct us_motor_init_para *bpara;
     struct us_motor_init_para *upara;
 	  struct ble10x_init_para *ble10x_init_para;
 };
 void xmit_list_push(u8 *packet, u16 packet_len);
 struct xmit_list * xmit_list_pop(void);
+int beeper_work(uint8_t count, uint8_t unused, struct controller *ctrler);
 
 int controller_init(struct controller **pctrler, struct controller_init_para *para);
 int controller_back_btn_pressed(struct controller *ctrler);
