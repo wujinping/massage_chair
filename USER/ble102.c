@@ -45,6 +45,11 @@ int ble10x_device_init(struct ble10x_device **pdev, struct ble10x_init_para *par
 	    dev_err("%s: failed to set work mode.\n", __func__);
 	    return -1;
 	}
+		ret = exit_command_mode(dev);
+	if(ret < 0){
+	    dev_err("%s: failed to exit command mode.\n", __func__);
+	    return -1;
+	}
     }
     dev->msg_x = ble10x_xmit_msg;
 
@@ -68,7 +73,7 @@ int setup_serial_port(struct ble10x_device *dev, struct ble10x_init_para *para)
     /* FIXME:!!No enough time, here we do a hard initialization(take no given para into consideration) */	
     uart3_init(dev->usx->usart_baudrate);
     /* TODO: add timmer initialization here */
-    platform_timer_intr_init(10);
+    platform_timer_intr_init(200);
 }
 int setup_buffers(struct ble10x_device *dev)
 {
@@ -92,7 +97,7 @@ int setup_buffers(struct ble10x_device *dev)
 int ble10x_usart_recv(struct ble10x_device *dev, char *buf, uint16_t len)
 {
     if(!dev || !buf || len <= 5){
-	print_err("%s: Invalid parameter\n", __func__);
+	//print_err("%s: Invalid parameter\n", __func__);
 	return -1;
     }
     /* First copy the received data into our internal buffer */
@@ -121,10 +126,17 @@ int ble10x_set_recv_callback(struct ble10x_device *dev, msg_callback callback)
 }
 int ble10x_xmit_msg(struct ble10x_device *dev, char *msg, uint16_t msg_len)
 {
+			char *str = "12345";
+	serial_xfer_string(str, 5);
+	delay_ms(20);
+    return 0;
     return 0;
 }
 static int set_workmode(struct ble10x_device *dev, enum MODULE_WORK_MODE mode)
 {
+		char *str = "AT+MODE=S\r\n";
+	serial_xfer_string(str, 11);
+	delay_ms(20);
     return 0;
 }
 static int set_uuid(struct ble10x_device *dev)
@@ -141,13 +153,27 @@ static int set_uart_packtime(struct ble10x_device *dev, uint16_t pack_time)
 }
 static int exit_command_mode(struct ble10x_device *dev)
 {
+			char *str = "AT+ENTM\r\n";
+	serial_xfer_string(str, 9);
+	delay_ms(20);
     return 0;
 }
 static int enter_command_mode(struct ble10x_device *dev)
 {
+	char *str = "+++a";
+	serial_xfer_string(str, 4);
+	delay_ms(20);
     return 0;
 }
 static int init_module_gpios(struct ble10x_device *dev)
 {
+	gpio_init(&dev->reload);
+	gpio_init(&dev->wakeup);
+	gpio_init(&dev->reset);
+	gpio_set_value(&dev->reload, 1);
+	gpio_set_value(&dev->wakeup, 1);
+	gpio_set_value(&dev->reset, 0);	
+	delay_ms(200);
+	gpio_set_value(&dev->reset, 1);	
     return 0;
 }

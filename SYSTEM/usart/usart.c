@@ -1,6 +1,7 @@
 
 #include "usart.h"
 #include "controller.h"
+#include "platform.h"
 
 /* FIXME: global variables trap, but we don't have much time */
 char serial_buf[50] = {0};
@@ -73,9 +74,13 @@ void uart3_init(u32 baud_rate)
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3,ENABLE);
 
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10|GPIO_Pin_11;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	
+    GPIO_Init(GPIOB,&GPIO_InitStructure); 
+	
+	    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
     GPIO_Init(GPIOB,&GPIO_InitStructure); 
 
     USART_InitStructure.USART_BaudRate = baud_rate;
@@ -106,6 +111,17 @@ void serial_packet_received()
     memset(serial_buf, 0, sizeof(serial_buf));
     serial_count = 0;
 }
+
+void serial_xfer_string(char *str, uint8_t len)
+{
+	u32 i = 0;
+	while(i < len){
+		USART_SendData(USART3,*(str+i));
+		while(USART_GetFlagStatus(USART3,USART_FLAG_TC) != SET);					
+		i++;
+	}	
+}
+ 
 void USART3_IRQHandler(void)                	
 {
     u8 recv_char;
@@ -114,13 +130,14 @@ void USART3_IRQHandler(void)
 	/* TODO: clear the TIMER counter when a new char is received */
 	platform_timer_refresh();
 	recv_char =USART_ReceiveData(USART3);
-	if(serial_count < 50){
-	    serial_buf[serial_count++] = recv_char;
-	}
-	else{
-	    memset(serial_buf, 0, sizeof(serial_buf));
-	    serial_count = 0;
-	}
+		if(serial_count < 50){
+			serial_buf[serial_count++] = recv_char;
+		}
+		else{
+			memset(serial_buf, 0, sizeof(serial_buf));
+			serial_count = 0;
+		}
+
     } 
 } 
 

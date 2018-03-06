@@ -82,7 +82,7 @@ char plat_intr_init(struct gpio *pio, EXTITrigger_TypeDef trigger_type)
 	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 	EXTI_Init(&EXTI_InitStructure);
 
-	switch(pio->pin){
+	switch(mod_2(pio->pin)){
 	    case 0:
 		NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;
 		break;
@@ -251,6 +251,15 @@ void EXTI1_IRQHandler(void)
 		EXTI_ClearITPendingBit(EXTI_Line1);
 	}
 }
+void EXTI3_IRQHandler(void)
+{
+		if(EXTI_GetITStatus(EXTI_Line1))
+	{
+		ctrler->bdev->middle_point_reached(ctrler->bdev);
+		EXTI_ClearITPendingBit(EXTI_Line1);
+	}
+}
+
 /* CAUTION: irq handler number must be the same as the EXTI souce (i.e. if you connect Px2 as a intr souce, then use EXTI2_IRQHandler instead) */
 void EXTI9_5_IRQHandler(void)
 {
@@ -291,7 +300,7 @@ void EXTI15_10_IRQHandler(void)
 	}
 			if(EXTI_GetITStatus(EXTI_Line13))
 	{
-		ctrler->bdev->middle_point_reached(ctrler->bdev);
+		ctrler->back_key_pressed(ctrler);
 		EXTI_ClearITPendingBit(EXTI_Line13);
 	}
 			if(EXTI_GetITStatus(EXTI_Line14))
@@ -319,24 +328,27 @@ int platform_timer_intr_init(uint32_t interval)
 	TIM_TimeBaseInitStructure.TIM_ClockDivision=TIM_CKD_DIV1; 
 
 	TIM_TimeBaseInit(TIM3,&TIM_TimeBaseInitStructure);
-
-	TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE); 
-	TIM_Cmd(TIM3,ENABLE);
+	TIM_SetCounter(TIM3, 1);
+	TIM_ITConfig(TIM3,TIM_IT_Update,DISABLE); 
+	TIM_Cmd(TIM3,DISABLE);
 
 	NVIC_InitStructure.NVIC_IRQChannel=TIM3_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0x01;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority=0x03;
 	NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
+	TIM_ClearITPendingBit(TIM3,TIM_IT_Update);
 }
 int platform_timer_stop()
 {
 	TIM_Cmd(TIM3, DISABLE);
+	TIM_ITConfig(TIM3,TIM_IT_Update,DISABLE); 
 }
 
 int platform_timer_refresh()
 {
-	TIM_SetCounter(TIM3, 0);
+	TIM_SetCounter(TIM3, 1);
+	TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE); 
 	TIM_Cmd(TIM3, ENABLE);
 }
 
@@ -371,8 +383,8 @@ void TIM3_IRQHandler(void)
 {
     if(TIM_GetITStatus(TIM3,TIM_IT_Update)==SET) {
 	/* Here we assume 1 full packet is received */
-	serial_packet_received();
 	platform_timer_stop();
+	serial_packet_received();
     }
     TIM_ClearITPendingBit(TIM3,TIM_IT_Update); 
 }
