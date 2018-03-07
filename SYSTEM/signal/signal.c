@@ -19,7 +19,7 @@ void init_signal_queue()
 
 }
 
-void queue_callback(unsigned short type, unsigned short param, void* paramdata,psignal_proc proc, BOOL priority) 
+void queue_callback(unsigned long type, unsigned short param, void* paramdata,psignal_proc proc, BOOL priority) 
 {
 	struct tagsignal_entry* psig = NULL;
 	struct tagsignal_queue* pqueue = NULL;

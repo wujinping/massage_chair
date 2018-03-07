@@ -93,7 +93,8 @@ int main(void)
     }
     while (1)
     {
-	poll_callbacks();
+      poll_callbacks();
+      controller_usage_verify(ctrler);
     }
 }
 

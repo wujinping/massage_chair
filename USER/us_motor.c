@@ -11,20 +11,17 @@ long speed_to_high_pulse(struct us_motor_device *umd, enum motor_speed speed)
 				high_pulse = 0;
 		break;
 	    case SPEED_SLOW:
-				high_pulse = 7000;
+				high_pulse = 10*100;
 		break;
 	    case SPEED_MEDIUM:
-				high_pulse = 15000;
+				high_pulse = 30*100;
 		break;
 	    case SPEED_FAST:
-				high_pulse = 20000;
+				high_pulse = 50*100;
 		break;
 	    default:
 		break;
 	}
-/* 2018-02-28 15:41 wujinping@toec Ltd. 
-	high_pulse = 500 +  ((2500 - 500)*angle)/ds311x->max_angle;
- */
 	return high_pulse;
 }
 
@@ -61,6 +58,34 @@ int set_dir(struct us_motor_device *umd, enum motion_direction dir)
 		}
 		return 0;
 }
+/*  */
+int get_dir(struct us_motor_device *umd)
+{
+  struct gpio *pdir1 = &(umd->dir1);
+	struct gpio *pdir2 = &(umd->dir2);
+  uint8_t dir1_value, dir2_value;
+  enum motion_direction dir;
+  if(!umd || !pdir1 || !pdir2){
+    dev_err("%s:invalid argument.\n", __func__);
+    return (int)-1;
+  }
+  
+  dir1_value = gpio_get_value(pdir1);
+  dir2_value = gpio_get_value(pdir2);
+  if(0 == dir1_value && 0 == dir2_value){
+    dir = DIR_OFF;
+  }
+  else if(1 == dir1_value && 0 == dir2_value){
+    dir = DIR_FORWARD;
+  }
+  else if(0 == dir1_value && 1 == dir2_value){
+    dir = DIR_BACKWARD;
+  }
+  else{
+    return -1;
+  }
+  return dir;
+}
 int set_range(struct us_motor_device *umd, enum motion_range range)
 {
     if(!umd){
@@ -68,6 +93,16 @@ int set_range(struct us_motor_device *umd, enum motion_range range)
 	return (int)-1;
     }
     umd->range = range;
+    if(RANGE_UPPER_HALF == range){
+      if(DIR_BACKWARD == get_dir(umd)){
+        set_dir(umd, DIR_FORWARD);
+      }
+    }
+    if(RANGE_LOWER_HALF == range){
+      if(DIR_FORWARD == get_dir(umd)){
+        set_dir(umd, DIR_BACKWARD);
+      }
+    }    
 }
 int set_speed(struct us_motor_device *umd, enum motor_speed speed)
 {
@@ -105,9 +140,11 @@ int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
 	}
 	umd->set_speed = set_speed;
 	umd->set_range = set_range;
+  umd->start = us_motor_start;
+  umd->stop = us_motor_stop;
 	*pum = umd;	
 	/*  TODO: 修改speed对应PWM的high-pulse时间, 并且修改PWM的设置 */
-	pwm_init(umd->tim, umd->channel, &umd->power,speed_to_high_pulse(umd, para->default_speed));
+	pwm_init(umd->tim, umd->channel, &umd->power,speed_to_high_pulse(umd, para->default_speed), 50);
 
 	/* TODO: IO口初始化是否正确 */
 	if(MOTOR_FOR_BACK == umd->type){

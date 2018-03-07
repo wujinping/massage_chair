@@ -35,7 +35,7 @@ typedef void (CALLBACK* psignal_proc) (unsigned short, unsigned char, void *);
 
 struct tagsignal_entry
 {
-	unsigned short type; // no use
+	unsigned long type; // no use
 	psignal_proc proc;
 	unsigned char param;
 	void *paramdata;
@@ -84,7 +84,7 @@ unsigned char get_signal_count(void);
  
  *  @see timer_proc kill_timer
  */
-void queue_callback(unsigned short type, unsigned char param, void* paramdata,
+void queue_callback(unsigned long type, unsigned char param, void* paramdata,
 							   psignal_proc proc, BOOL priority);
 
 /** 检查信号队列 \n

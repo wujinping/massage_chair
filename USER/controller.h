@@ -16,7 +16,8 @@ enum lower_state {
 };
 struct controller {
     int unlocked;
-    int valid_sec;
+    uint32_t valid_sec;
+    uint32_t valid_start;
     struct gpio upper_start_range;
     struct gpio lower_start;
     struct gpio speed_config;
@@ -31,6 +32,7 @@ struct controller {
 	enum upper_state ustate;
 	enum lower_state lstate;
 	enum motor_speed speed;
+  uint32_t id_buf[3];
 		int (*back_key_pressed)(struct controller *ctrler);
 	int (*bottom_key_pressed)(struct controller *ctrler);
 	int (*speed_key_pressed)(struct controller *ctrler);
@@ -56,3 +58,4 @@ int controller_init(struct controller **pctrler, struct controller_init_para *pa
 int controller_back_btn_pressed(struct controller *ctrler);
 int controller_bottom_btn_pressed(struct controller *ctrler);
 int controller_speed_btn_pressed(struct controller *ctrler);
+int controller_usage_verify(struct controller *ctrler);

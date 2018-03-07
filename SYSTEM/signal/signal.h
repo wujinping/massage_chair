@@ -14,11 +14,11 @@ typedef char               BOOL;
 #endif
 
 
-typedef void (CALLBACK* psignal_proc) (unsigned short, unsigned char, void *);
+typedef void (CALLBACK* psignal_proc) (unsigned long, unsigned char, void *);
 
 struct tagsignal_entry
 {
-	unsigned short type; 
+	unsigned long type; 
 	psignal_proc proc;
 	unsigned char param;
 	void *paramdata;
@@ -37,7 +37,7 @@ void init_signal_queue(void);
 
 unsigned char get_signal_count(void);
 
-void queue_callback(unsigned short type, unsigned short param, void* paramdata,
+void queue_callback(unsigned long type, unsigned short param, void* paramdata,
 							   psignal_proc proc, BOOL priority);
 void poll_callbacks(void);
 

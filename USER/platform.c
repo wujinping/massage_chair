@@ -26,6 +26,15 @@ uint8_t mod_2(uint16_t value)
 	return i;
 }
 
+void platform_get_uniq_id(uint32_t *uid_buf)
+{
+  if(!uid_buf){
+    return;
+  }
+  *uid_buf++ = *(volatile uint32_t *)(0x1FFFF7E8);
+  *uid_buf++ = *(volatile uint32_t *)(0x1FFFF7EC);
+  *uid_buf++ = *(volatile uint32_t *)(0x1FFFF7F0);
+}
 void gpio_init(struct gpio *pio)
 {
 	GPIO_InitTypeDef  GPIO_InitStructure;
@@ -114,7 +123,7 @@ char plat_intr_init(struct gpio *pio, EXTITrigger_TypeDef trigger_type)
 	EXTI_ClearITPendingBit(pio->pin);
 	return 0;
 }
-void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high_pulse)
+void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high_pulse, uint32_t period)
 {
 	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	TIM_OCInitTypeDef  TIM_OCInitStructure;
@@ -175,9 +184,9 @@ void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE); 	
 	gpio_init(pio);
 		
-	TIM_TimeBaseStructure.TIM_Prescaler= 72 - 1;  
+	TIM_TimeBaseStructure.TIM_Prescaler= 720 - 1;  
 	TIM_TimeBaseStructure.TIM_CounterMode=TIM_CounterMode_Up;
-	TIM_TimeBaseStructure.TIM_Period= 20000 - 1;  
+	TIM_TimeBaseStructure.TIM_Period= period*100 - 1;  
 	TIM_TimeBaseStructure.TIM_ClockDivision=TIM_CKD_DIV1; 
 	
 	TIM_TimeBaseInit(tim,&TIM_TimeBaseStructure);

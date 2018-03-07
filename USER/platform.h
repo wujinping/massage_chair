@@ -54,7 +54,7 @@ void platform_spi_init(struct spi_dev *spi, uint32_t freq);
 
 char plat_intr_init(struct gpio *pio, EXTITrigger_TypeDef trigger_type);
 
-void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high_pulse);
+void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high_pulse, uint32_t period);
 	
 void pwm_set_high_pulse(TIM_TypeDef *tim, uint8_t channel, uint32_t high_pulse);
 
@@ -66,4 +66,4 @@ int platform_counter_init(uint32_t interval);
 
 uint32_t platform_get_counter(void);
 
-
+void platform_get_uniq_id(uint32_t *uid_buf);

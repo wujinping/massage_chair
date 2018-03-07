@@ -28,8 +28,14 @@ int ble10x_device_init(struct ble10x_device **pdev, struct ble10x_init_para *par
     setup_serial_port(dev, para);
     /* TODO: Initialize transmit and recv buffer */
     setup_buffers(dev);
+    dev->work_mode = para->default_mode;
     if(para->init_everytime){
 	/* Now we try to enter the command mode see if the module works */
+      ret = module_reset(dev);
+    if(ret < 0){
+      dev_err("%s: failed to reset ble10x module.\n", __func__);
+      return -1;
+    }
 	ret = enter_command_mode(dev);
 	if(ret < 0){
 	    dev_err("%s: failed to enter command mode.\n", __func__);
@@ -124,12 +130,18 @@ int ble10x_set_recv_callback(struct ble10x_device *dev, msg_callback callback)
     return 0;
 
 }
-int ble10x_xmit_msg(struct ble10x_device *dev, char *msg, uint16_t msg_len)
+int ble10x_xmit_msg(char *msg, uint16_t msg_len, struct ble10x_device *dev)
 {
-			char *str = "12345";
-	serial_xfer_string(str, 5);
-	delay_ms(20);
-    return 0;
+    if(!dev || !msg){
+	print_err("%s: Invalid parameter\n", __func__);
+	return -1;
+    }
+//    if(MODE_SLAVE != dev->work_mode){
+//      print_err("%s: Not in slave mode, t\n", __func__);
+//      return -1;    
+//    }
+	serial_xfer_string(msg, msg_len);
+    free(msg);
     return 0;
 }
 static int set_workmode(struct ble10x_device *dev, enum MODULE_WORK_MODE mode)
@@ -164,6 +176,12 @@ static int enter_command_mode(struct ble10x_device *dev)
 	serial_xfer_string(str, 4);
 	delay_ms(20);
     return 0;
+}
+static int module_reset(struct ble10x_device *dev)
+{
+	gpio_set_value(&dev->reset, 0);	
+	delay_ms(200);
+	gpio_set_value(&dev->reset, 1);	
 }
 static int init_module_gpios(struct ble10x_device *dev)
 {
