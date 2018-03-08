@@ -35,7 +35,6 @@ struct us_motor_init_para umotor_para = {
     {0,0,0},
     {0,0,0},
     
-    
     {0,0,0},
     {0,0,0},
     {GPIOC, GPIO_Pin_14, GPIO_Mode_Out_PP},  
@@ -63,7 +62,8 @@ struct controller_init_para para = {
     {GPIOC, GPIO_Pin_13, GPIO_Mode_IPU},
     {GPIOC, GPIO_Pin_15, GPIO_Mode_IPU},
     {GPIOA, GPIO_Pin_1, GPIO_Mode_IPU},
-    {GPIOB, GPIO_Pin_5, GPIO_Mode_Out_PP},
+    /* FIXME: PB5 is actually used as beeper output, but something terrible happens when beeper beeps */
+    {GPIOB, GPIO_Pin_4, GPIO_Mode_Out_PP},
 
     {GPIOA, GPIO_Pin_0, GPIO_Mode_Out_PP},
     &bmotor_para,

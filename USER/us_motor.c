@@ -128,7 +128,7 @@ int set_speed(struct us_motor_device *umd, enum motor_speed speed)
 {
     long high_pulse = speed_to_high_pulse(umd, speed);
     if(!umd || (high_pulse < 0)){
-	print_err("%s: invalid parameter\n", __func__);
+	dev_err("%s: invalid parameter\n", __func__);
 	return -1;
     }
     umd->speed = speed;
@@ -141,7 +141,7 @@ int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
 	if(!pum || !para)
 		return -1;
 	if(!umd){
-		print_err("%s: not enough memory\n", __func__);
+		dev_err("%s: not enough memory\n", __func__);
 		return -1;
 	}
 	umd->power = para->power;

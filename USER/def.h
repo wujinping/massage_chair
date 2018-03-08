@@ -6,8 +6,7 @@
 #include <math.h>
 #define UNUSED_PARAMETER(para)	do{}while(0);
 
-#define 	print_err 	printf
-#define 	print_info 	printf
+
 
 #if defined(PRINT_FULL_MESSAGE)
 #define dev_err(format, ...)		printf(format, ## __VA_ARGS__)

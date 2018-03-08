@@ -14,7 +14,7 @@ int ble10x_device_init(struct ble10x_device **pdev, struct ble10x_init_para *par
     if(!pdev || !para)
 	return -1;
     if(!dev){
-	print_err("%s: not enough memory\n", __func__);
+	dev_err("%s: not enough memory\n", __func__);
 	return -1;
     }
     dev->usart = para->usart;
@@ -65,12 +65,12 @@ int ble10x_device_init(struct ble10x_device **pdev, struct ble10x_init_para *par
 int setup_serial_port(struct ble10x_device *dev, struct ble10x_init_para *para)
 {
     if(!dev){
-	print_err("%s: Invalid parameter\n", __func__);
+	dev_err("%s: Invalid parameter\n", __func__);
 	return -1;
     }
     dev->usx = calloc(sizeof(struct usart_xmitter), 1);
     if(!dev->usx){
-	print_err("%s: Not enough memory\n", __func__);
+	dev_err("%s: Not enough memory\n", __func__);
 	return -1;
     }
     dev->usx->xmit_cb = ble10x_usart_xmit;
@@ -86,7 +86,7 @@ int setup_serial_port(struct ble10x_device *dev, struct ble10x_init_para *para)
 int setup_buffers(struct ble10x_device *dev)
 {
     if(!dev){
-	print_err("%s: Invalid parameter\n", __func__);
+	dev_err("%s: Invalid parameter\n", __func__);
 	return -1;
     }
     dev->xmit_buf = calloc(XMIT_BUFFER_MAX, 1);
@@ -105,7 +105,7 @@ int setup_buffers(struct ble10x_device *dev)
 int ble10x_usart_recv(struct ble10x_device *dev, char *buf, uint16_t len)
 {
     if(!dev || !buf || len <= 5){
-	//print_err("%s: Invalid parameter\n", __func__);
+	//dev_err("%s: Invalid parameter\n", __func__);
 	return -1;
     }
     /* First copy the received data into our internal buffer */
@@ -125,7 +125,7 @@ int ble10x_usart_xmit(struct ble10x_device *dev, char *buf, uint16_t len)
 int ble10x_set_recv_callback(struct ble10x_device *dev, msg_callback callback)
 {
     if(!dev){
-	print_err("%s: Invalid parameter\n", __func__);
+	dev_err("%s: Invalid parameter\n", __func__);
 	return -1;
     }
     dev->msg_cb = callback;
@@ -135,7 +135,7 @@ int ble10x_set_recv_callback(struct ble10x_device *dev, msg_callback callback)
 int ble10x_xmit_msg(char *msg, uint16_t msg_len, struct ble10x_device *dev)
 {
     if(!dev || !msg){
-	print_err("%s: Invalid parameter\n", __func__);
+	dev_err("%s: Invalid parameter\n", __func__);
 	return -1;
     }
 	serial_xfer_string(msg, msg_len);

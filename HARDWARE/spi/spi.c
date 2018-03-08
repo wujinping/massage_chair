@@ -34,7 +34,7 @@ void spi_init(struct spi_dev *spi, uint32_t freq)
 	SPI_InitTypeDef  SPI_InitStructure;
 	uint8_t prescaler, value = 0xff;
 	if(!spi){
-		print_err("%s: invalid parameter, spi handle = NULL\n", __func__);
+		dev_err("%s: invalid parameter, spi handle = NULL\n", __func__);
 		return;
 	}
 	switch((uint32_t)spi->spi_base){
