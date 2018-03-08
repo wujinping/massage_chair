@@ -2,6 +2,7 @@
 #include "delay.h"
 #include "ble102.h"
 #include "signal.h"
+#include "us_motor.h"
 int authen_from_user(uint32_t passwd)
 {
   return 0;
@@ -16,35 +17,27 @@ int controller_handle_user_commands(void *p, char *msg, uint16_t msg_len)
 	print_err("%s: Invalid parameter\n", __func__);
 	return -1;
     }
-    /* Authentication command */
-    if(!strncmp(msg, "$A", 2)){
-	/* TODO: check the authentication is passed or not */
-	char authen_buf[8] = {0};
-	strncpy(authen_buf, msg+7, 8);
-	/* Now we just ignore that ... */
-	ctrl->unlocked = 1;
-    }
+    xmit_buf = calloc(20, 1);
     /* Request for password seed */
-    else if(!strncmp(msg, "$R", 2)){
-      xmit_buf = calloc(16, 1);
-      if(!xmit_buf){
-        	print_err("%s: Not enough memory\n", __func__);
-          return -1;
-      }
-      sprintf(xmit_buf, "$R,%08X*00\r\n", ctrl->id_buf[2]);
-      queue_callback((unsigned long)xmit_buf,16,(void *)ctrl, (psignal_proc)ctrl->ble_dev->msg_x, 0);
+    if(!strncmp(msg, "$R", 2)){
+      sprintf(xmit_buf, "$R,%08X*00", ctrl->id_buf[2]);
+      queue_callback((unsigned long)xmit_buf,strlen(xmit_buf),(void *)ctrl, (psignal_proc)ctrl->ble_dev->msg_x, 0);
     }
     /* Start device command */
     else if(!strncmp(msg, "$S", 2)){
-      sscanf((const char *)msg, "$S,%x,%d*00\r\n", &resp, &time_to_use);
+      sscanf((const char *)msg, "$S,%x,%d*00", &resp, &time_to_use);
       if(authen_from_user(resp) < 0){
         /* Authentication failed */
+        sprintf(xmit_buf, "$S,Failed*00");
+        queue_callback((unsigned long)xmit_buf,strlen(xmit_buf),(void *)ctrl, (psignal_proc)ctrl->ble_dev->msg_x, 0);        
         return -1;
       }
       else{
         ctrl->unlocked = 1;
         ctrl->valid_sec = time_to_use;
         ctrl->valid_start = platform_get_counter();
+        sprintf(xmit_buf, "$S,OK*00");
+        queue_callback((unsigned long)xmit_buf,strlen(xmit_buf),(void *)ctrl, (psignal_proc)ctrl->ble_dev->msg_x, 0);          
         queue_callback(3,0,ctrl, (psignal_proc)beeper_work, 0);
       }
     }
@@ -69,6 +62,11 @@ int controller_usage_verify(struct controller *ctrler)
       ctrler->valid_start = 0;
       ctrler->bdev->stop(ctrler->bdev);
       ctrler->udev->stop(ctrler->udev);
+      ctrler->lstate = STATE_OFF;
+      ctrler->ustate = STATE_STATIC;
+      ctrler->speed = SPEED_STATIC;
+      gpio_set_value(&ctrler->speed_led, 0);
+      queue_callback(0,0,ctrler, (psignal_proc)beeper_work_long, 0);
       return -1;
     }
     return 0;
@@ -105,14 +103,8 @@ int controller_init(struct controller **pctrler, struct controller_init_para *pa
     ctrler->upper_start_range = para->upper_start_range;
     ctrler->beeper = para->beeper;
     ctrler->speed_led = para->speed_led;
-    ctrler->upper_led1 = para->upper_led1;
-    ctrler->upper_led2 = para->upper_led2;
-    ctrler->lower_led = para->lower_led;
 		gpio_init(&ctrler->beeper);
 		gpio_init(&ctrler->speed_led);
-		gpio_init(&ctrler->upper_led1);
-		gpio_init(&ctrler->upper_led2);
-		gpio_init(&ctrler->lower_led);
     ble10x_set_recv_callback(ctrler->ble_dev, controller_handle_user_commands);
     /* Initialize KEY interrupts */
     plat_intr_init(&ctrler->lower_start, EXTI_Trigger_Falling);
@@ -127,12 +119,14 @@ int controller_init(struct controller **pctrler, struct controller_init_para *pa
     ctrler->lstate = STATE_OFF;
     ctrler->speed = SPEED_STATIC;
 		ctrler->unlocked = 1;
+    ctrler->valid_sec = 100;
+    ctrler->valid_start = 0;
     *pctrler = ctrler;
     return 0;
 }
 int controller_back_btn_pressed(struct controller *ctrler)
 {
-    struct us_motor_device *dev = ctrler->udev;
+    struct us_motor_device *dev = ctrler->bdev;
     if(!ctrler || !ctrler->bdev){
 	print_err("%s: Invalid parameter!\n", __func__);
 	return -1;
@@ -141,35 +135,28 @@ int controller_back_btn_pressed(struct controller *ctrler)
 	print_err("%s: Device locked, cannot work!\n", __func__);
 	return -1;
     }
-    beeper_work(1, 0, ctrler);
+    queue_callback(1,0,ctrler, (psignal_proc)beeper_work, 0);
     switch(ctrler->ustate)
     {
 	case STATE_STATIC:
 	    ctrler->ustate = STATE_LOWER;
 	    dev->set_range(dev, RANGE_LOWER_HALF);
 	    dev->set_speed(dev, ctrler->speed);
-	    gpio_set_value(&ctrler->upper_led1, 0);
-	    gpio_set_value(&ctrler->upper_led2, 1);
 	    break;
 	case STATE_LOWER:
 	    ctrler->ustate = STATE_UPPER;
 	    dev->set_range(dev, RANGE_UPPER_HALF);
 	    dev->set_speed(dev, ctrler->speed);		
-	    gpio_set_value(&ctrler->upper_led1, 1);
-	    gpio_set_value(&ctrler->upper_led2, 0);
 	    break;
 	case STATE_UPPER:
 	    ctrler->ustate = STATE_ENTIRE;
 	    dev->set_range(dev, RANGE_ENTIRE);
 	    dev->set_speed(dev, ctrler->speed);		
-	    gpio_set_value(&ctrler->upper_led1, 1);
-	    gpio_set_value(&ctrler->upper_led2, 1);
 	    break;
 	case STATE_ENTIRE:
 	    ctrler->ustate = STATE_STATIC;
-	    dev->set_speed(dev, SPEED_STATIC);				
-	    gpio_set_value(&ctrler->upper_led1, 0);
-	    gpio_set_value(&ctrler->upper_led2, 0);
+      dev->stop(dev);
+	    //dev->set_speed(dev, SPEED_STATIC);				
 	    break;	
 	default:
 	    break;
@@ -188,18 +175,18 @@ int controller_bottom_btn_pressed(struct controller *ctrler)
 	return -1;
     }
 
-    beeper_work(1, 0, ctrler);
+    queue_callback(1,0,ctrler, (psignal_proc)beeper_work, 0);
     switch(ctrler->lstate)
     {
 	case STATE_OFF:
 	    ctrler->lstate = STATE_ON;
-	    dev->set_speed(dev, ctrler->speed);			
-	    gpio_set_value(&ctrler->lower_led, 1);
+	    dev->set_speed(dev, ctrler->speed);		
+      dev->start(dev);
 	    break;
 	case STATE_ON:
 	    ctrler->lstate = STATE_OFF;
-	    dev->set_speed(dev, SPEED_STATIC);			
-	    gpio_set_value(&ctrler->lower_led, 0);
+	    dev->set_speed(dev, SPEED_STATIC);	
+      dev->stop(dev);
 	    break;
 	default:
 	    break;
@@ -218,7 +205,7 @@ int controller_speed_btn_pressed(struct controller *ctrler)
 	print_err("%s: Device locked, cannot work!\n", __func__);
 	return -1;
     }
-    beeper_work(1, 0, ctrler);
+    queue_callback(1,0,ctrler, (psignal_proc)beeper_work, 0);
     switch(ctrler->speed){
 	case SPEED_STATIC:
 	    ctrler->speed = SPEED_SLOW;
@@ -258,9 +245,21 @@ int beeper_work(uint8_t count, uint8_t unused, struct controller *ctrler)
     }
     for(loop = 0; loop < count; loop++){
 	gpio_set_value(&ctrler->beeper, 1);
-	delay_ms(20);
+	delay_ms(100);
 	gpio_set_value(&ctrler->beeper, 0);
-	delay_ms(20);
+	delay_ms(100);
     }
+    return 0;
+}
+int beeper_work_long(uint8_t unused1, uint8_t unused2, struct controller *ctrler)
+{
+    uint8_t loop;
+    if(!ctrler){
+	print_err("%s: Invalid parameter!\n", __func__);
+	return -1;
+    }
+	gpio_set_value(&ctrler->beeper, 1);
+	delay_ms(1000);
+	gpio_set_value(&ctrler->beeper, 0);
     return 0;
 }

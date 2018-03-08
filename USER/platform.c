@@ -123,6 +123,7 @@ char plat_intr_init(struct gpio *pio, EXTITrigger_TypeDef trigger_type)
 	EXTI_ClearITPendingBit(pio->pin);
 	return 0;
 }
+
 void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high_pulse, uint32_t period)
 {
 	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -184,7 +185,7 @@ void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE); 	
 	gpio_init(pio);
 		
-	TIM_TimeBaseStructure.TIM_Prescaler= 720 - 1;  
+	TIM_TimeBaseStructure.TIM_Prescaler= 80 - 1;  
 	TIM_TimeBaseStructure.TIM_CounterMode=TIM_CounterMode_Up;
 	TIM_TimeBaseStructure.TIM_Period= period*100 - 1;  
 	TIM_TimeBaseStructure.TIM_ClockDivision=TIM_CKD_DIV1; 
@@ -286,7 +287,6 @@ void EXTI9_5_IRQHandler(void)
 	}		
 	if(EXTI_GetITStatus(EXTI_Line8))
 	{
-//		nrf24xx_irq_handler(nrf24l01_rx);		
 		EXTI_ClearITPendingBit(EXTI_Line8);
 	}	
 	
@@ -320,7 +320,7 @@ void EXTI15_10_IRQHandler(void)
 			if(EXTI_GetITStatus(EXTI_Line15))
 	{
 		ctrler->bottom_key_pressed(ctrler);
-		EXTI_ClearITPendingBit(EXTI_Line15);
+    EXTI_ClearITPendingBit(EXTI_Line15);
 	}
 }
 /* FIMXE: FATAL FATAL FATAL , here we just do a solid TIM3 timer init, not a generic TIMER initialization */
@@ -331,7 +331,7 @@ int platform_timer_intr_init(uint32_t interval)
 
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3,ENABLE); 
 
-	TIM_TimeBaseInitStructure.TIM_Prescaler=720-1; 
+	TIM_TimeBaseInitStructure.TIM_Prescaler=80-1; 
 	TIM_TimeBaseInitStructure.TIM_CounterMode=TIM_CounterMode_Up;
 	TIM_TimeBaseInitStructure.TIM_Period=100*interval-1;  
 	TIM_TimeBaseInitStructure.TIM_ClockDivision=TIM_CKD_DIV1; 
@@ -368,7 +368,7 @@ int platform_counter_init(uint32_t interval)
 
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4,ENABLE); 
 
-    TIM_TimeBaseInitStructure.TIM_Prescaler=720-1; 
+    TIM_TimeBaseInitStructure.TIM_Prescaler=80-1; 
     TIM_TimeBaseInitStructure.TIM_CounterMode=TIM_CounterMode_Up;
     TIM_TimeBaseInitStructure.TIM_Period=100*interval-1;  
     TIM_TimeBaseInitStructure.TIM_ClockDivision=TIM_CKD_DIV1; 

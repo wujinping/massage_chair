@@ -32,6 +32,9 @@ struct us_motor_device {
 	struct gpio upper_edge;
 	struct gpio middle_pos;
 	struct gpio lower_edge;
+	struct gpio upper_led1;
+	struct gpio upper_led2;  
+  struct gpio lower_led;
 	uint8_t channel;
 	enum motor_speed speed;	
 	enum motion_direction dir;	
@@ -51,6 +54,9 @@ struct us_motor_init_para{
 	struct gpio power;
 	struct gpio dir1;
 	struct gpio dir2;
+	struct gpio upper_led1;
+	struct gpio upper_led2;  
+  struct gpio lower_led;
 	struct gpio upper_edge;
 	struct gpio middle_pos;
 	struct gpio lower_edge;

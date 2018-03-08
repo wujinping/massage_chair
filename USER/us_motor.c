@@ -29,7 +29,7 @@ int set_dir(struct us_motor_device *umd, enum motion_direction dir)
 {
     struct gpio *pdir1 = &(umd->dir1);
 	struct gpio *pdir2 = &(umd->dir2);
-    if(!umd || !pdir1 || !pdir2){
+    if(!umd || !pdir1 || !pdir2 || MOTOR_FOR_BACK != umd->type){
 	dev_err("%s:invalid argument.\n", __func__);
 	return (int)-1;
     }
@@ -88,7 +88,7 @@ int get_dir(struct us_motor_device *umd)
 }
 int set_range(struct us_motor_device *umd, enum motion_range range)
 {
-    if(!umd){
+    if(!umd || MOTOR_FOR_BACK != umd->type){
 	dev_err("%s:invalid argument.\n", __func__);
 	return (int)-1;
     }
@@ -102,7 +102,27 @@ int set_range(struct us_motor_device *umd, enum motion_range range)
       if(DIR_FORWARD == get_dir(umd)){
         set_dir(umd, DIR_BACKWARD);
       }
-    }    
+    }
+    switch(range){
+      case RANGE_UPPER_HALF:
+        gpio_set_value(&umd->upper_led1, 1);
+        gpio_set_value(&umd->upper_led2, 0);          
+        break;
+      case RANGE_LOWER_HALF:
+        gpio_set_value(&umd->upper_led1, 0);
+        gpio_set_value(&umd->upper_led2, 1);          
+        break;
+      case RANGE_ENTIRE:
+        gpio_set_value(&umd->upper_led1, 1);
+        gpio_set_value(&umd->upper_led2, 1);          
+        break;
+      default:
+        gpio_set_value(&umd->upper_led1, 0);
+        gpio_set_value(&umd->upper_led2, 0);          
+        break;
+    }
+    return 0;
+  
 }
 int set_speed(struct us_motor_device *umd, enum motor_speed speed)
 {
@@ -131,6 +151,8 @@ int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
 	if(MOTOR_FOR_BACK == umd->type){
 	    umd->dir1 = para->dir1;
 	    umd->dir2 = para->dir2;
+      umd->upper_led1 = para->upper_led1;
+      umd->upper_led2 = para->upper_led2;
 	    umd->upper_edge= para->upper_edge;
 	    umd->middle_pos= para->middle_pos;
 	    umd->lower_edge= para->lower_edge;
@@ -138,6 +160,9 @@ int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
 	    umd->middle_point_reached = us_motor_middle_point_reached;
 	    umd->lower_edge_reached = us_motor_lower_edge_reached;
 	}
+  else if(MOTOR_FOR_LEG == umd->type){
+    umd->lower_led = para->lower_led;
+  }
 	umd->set_speed = set_speed;
 	umd->set_range = set_range;
   umd->start = us_motor_start;
@@ -153,7 +178,12 @@ int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
 	    gpio_init(&umd->upper_edge);
 	    gpio_init(&umd->middle_pos);
 	    gpio_init(&umd->lower_edge);
+      gpio_init(&umd->upper_led1);
+      gpio_init(&umd->upper_led2);
 	}
+  else if(MOTOR_FOR_LEG == umd->type){
+    gpio_init(&umd->lower_led);
+  }
 	/* TODO: 增加限位检测输入点的中断初始化处理 */
 	if(MOTOR_FOR_BACK == umd->type){
 	    plat_intr_init(&umd->upper_edge, EXTI_Trigger_Rising);
@@ -173,6 +203,9 @@ int us_motor_start(struct us_motor_device *umd)
 	return (int)-1;
     }
     set_speed(umd, umd->speed);
+    if(MOTOR_FOR_LEG == umd->type){
+      gpio_set_value(&umd->lower_led, 1); 
+    }
     return 0;
 }
 int us_motor_stop(struct us_motor_device *umd)
@@ -183,6 +216,13 @@ int us_motor_stop(struct us_motor_device *umd)
 	return (int)-1;
     }
     set_speed(umd, SPEED_STATIC);
+    if(MOTOR_FOR_LEG == umd->type){
+      gpio_set_value(&umd->lower_led, 0); 
+    }
+    else{
+      gpio_set_value(&umd->upper_led1, 0);
+      gpio_set_value(&umd->upper_led2, 0);
+    }
     return 0;
 }
 
