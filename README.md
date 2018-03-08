@@ -7,7 +7,7 @@
 * Currently only the following `2` types of commands that could be accepted and interpreted into corresponding motions, and `2` corresponding responses.
 
 |Index|Command|Direction|Format|Usage|Example|
-|-|-|-|-|-|
+|-|-|-|-|-|-|
 |1|AUTHENTICATION REQUEST|App-Device|"$R,$Seed*00"|Sending this command initiates a authentication procedure <br>`$Seed`is a 32-bits ASCII string(little endian, by the way) password seed for the purpose of encryption <br>`00` is reserved for a CRC-16 check of this message <br>|**"$R,AF1C7042*00"**<br> sets a password seed of `0xaf1c7042`
 |2|AUTHENTICATION RESPONSE|Device-App|"$R,$ID*00\r\n"|This response message is sent when an `AUTHENTICATON REQUEST` command is received.<br>`$ID` is a 32-bits ASCII string of the device unique ID.|**"$R,12345678,*00"**<br> reponses the device ID of `0x12345678`. 
 |3|DEVICE START|App-Device|"$S,$Password,$Time*00"|`$Password` is a 32-bits ASCII string password encoded with the `$ID` and `$Seed`(unfortunately this parameter is ignored for now)<br>`$Time` is a parameter that indicates for how much time in seconds the device counld keep running.|**"$S,3ed2c2ff,6000*00"**<br> set the device available for 100 minutes if `0x3ed2c2ff` is a valid password.
