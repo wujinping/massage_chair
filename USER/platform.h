@@ -9,7 +9,7 @@
 #include "spi.h"
 
 
-#if	STM32F10X_HD
+#if	1
 
 #define COUNTER_INTERVAL 100
 

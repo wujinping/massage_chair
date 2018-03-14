@@ -8,7 +8,7 @@
 #include "stm32f10x.h"
 #include "controller.h"
 #include "usart.h"
-#ifdef	STM32F10X_HD
+#if	1
 
 extern struct controller *ctrler;
 uint32_t platform_counter = 0;
@@ -218,6 +218,7 @@ void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high
 	}
   TIM_ARRPreloadConfig(tim,ENABLE);	
 	TIM_Cmd(tim, ENABLE); 	
+	TIM_CtrlPWMOutputs(TIM1, ENABLE);
 }
 void pwm_set_high_pulse(TIM_TypeDef *tim, uint8_t channel, uint32_t high_pulse)
 {

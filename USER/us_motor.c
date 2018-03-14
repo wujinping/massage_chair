@@ -11,13 +11,13 @@ long speed_to_high_pulse(struct us_motor_device *umd, enum motor_speed speed)
 				high_pulse = 0;
 		break;
 	    case SPEED_SLOW:
-				high_pulse = 10*100;
+				high_pulse = 10*100 - 1;
 		break;
 	    case SPEED_MEDIUM:
-				high_pulse = 30*100;
+				high_pulse = 30*100 - 1;
 		break;
 	    case SPEED_FAST:
-				high_pulse = 50*100;
+				high_pulse = 50*100 - 1;
 		break;
 	    default:
 		break;
