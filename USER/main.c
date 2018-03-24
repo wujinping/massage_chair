@@ -11,7 +11,7 @@ struct us_motor_init_para bmotor_para = {
     MOTOR_FOR_BACK,
     TIM1,
     1,
-    {GPIOA, GPIO_Pin_8, GPIO_Mode_Out_PP},
+    {GPIOA, GPIO_Pin_8, GPIO_Mode_AF_PP},
     {GPIOA, GPIO_Pin_10, GPIO_Mode_Out_PP},
     {GPIOA, GPIO_Pin_11, GPIO_Mode_Out_PP},
     
@@ -31,7 +31,7 @@ struct us_motor_init_para umotor_para = {
     MOTOR_FOR_LEG,
     TIM1,
     2,
-    {GPIOA, GPIO_Pin_9, GPIO_Mode_Out_PP},
+    {GPIOA, GPIO_Pin_9, GPIO_Mode_AF_PP},
     {0,0,0},
     {0,0,0},
     

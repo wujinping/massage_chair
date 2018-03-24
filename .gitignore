@@ -1,4 +1,6 @@
 OBJ/
+LIS/
+USER/JLinkLog.txt
 *.o
 *.obj
 *.map
@@ -7,3 +9,4 @@ cscope.*
 *.bak
 *.map
 *.dep
+*.lst

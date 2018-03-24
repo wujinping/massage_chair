@@ -192,6 +192,7 @@ void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high
 	
 	TIM_TimeBaseInit(tim,&TIM_TimeBaseStructure);
 	
+	TIM_OCStructInit(&TIM_OCInitStructure);
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
  	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
@@ -222,6 +223,11 @@ void pwm_init(TIM_TypeDef *tim, uint8_t channel, struct gpio *pio, uint32_t high
 }
 void pwm_set_high_pulse(TIM_TypeDef *tim, uint8_t channel, uint32_t high_pulse)
 {
+	if(1 == channel)
+		pwm_init(tim, channel, &ctrler->bdev->power, high_pulse, 50);
+	else
+		pwm_init(tim, channel, &ctrler->udev->power, high_pulse, 50);
+	/*
 	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	TIM_OCInitTypeDef  TIM_OCInitStructure;
 	
@@ -252,7 +258,8 @@ void pwm_set_high_pulse(TIM_TypeDef *tim, uint8_t channel, uint32_t high_pulse)
 			break;
 	}
   TIM_ARRPreloadConfig(tim,ENABLE);	
-	
+	TIM_CtrlPWMOutputs(TIM1, ENABLE);
+	*/
 }
 void EXTI1_IRQHandler(void)
 {
@@ -264,10 +271,10 @@ void EXTI1_IRQHandler(void)
 }
 void EXTI3_IRQHandler(void)
 {
-		if(EXTI_GetITStatus(EXTI_Line1))
+		if(EXTI_GetITStatus(EXTI_Line3))
 	{
 		ctrler->bdev->middle_point_reached(ctrler->bdev);
-		EXTI_ClearITPendingBit(EXTI_Line1);
+		EXTI_ClearITPendingBit(EXTI_Line3);
 	}
 }
 

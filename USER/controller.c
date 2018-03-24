@@ -5,6 +5,7 @@
 #include "us_motor.h"
 int authen_from_user(uint32_t passwd)
 {
+	/* TODO: Do a real authentication */
 	return 0;
 }
 /* 此处解析来自用户的命令 */
@@ -212,7 +213,7 @@ int controller_speed_btn_pressed(struct controller *ctrler)
 		  if(STATE_STATIC != ctrler->ustate){
 				bdev->set_speed(bdev, ctrler->speed);	
 			}
-			if(STATE_OFF != ctrler->ustate){
+			if(STATE_OFF != ctrler->lstate){
 				udev->set_speed(udev, ctrler->speed);	
 			}
 			gpio_set_value(&ctrler->speed_led, 0);
@@ -222,7 +223,7 @@ int controller_speed_btn_pressed(struct controller *ctrler)
 		  if(STATE_STATIC != ctrler->ustate){
 				bdev->set_speed(bdev, ctrler->speed);	
 			}
-			if(STATE_OFF != ctrler->ustate){
+			if(STATE_OFF != ctrler->lstate){
 				udev->set_speed(udev, ctrler->speed);		
 			}				
 			gpio_set_value(&ctrler->speed_led, 0);
@@ -232,7 +233,7 @@ int controller_speed_btn_pressed(struct controller *ctrler)
 		  if(STATE_STATIC != ctrler->ustate){
 				bdev->set_speed(bdev, ctrler->speed);	
 			}
-			if(STATE_OFF != ctrler->ustate){
+			if(STATE_OFF != ctrler->lstate){
 				udev->set_speed(udev, ctrler->speed);			
 			}
 			gpio_set_value(&ctrler->speed_led, 1);
@@ -242,7 +243,7 @@ int controller_speed_btn_pressed(struct controller *ctrler)
 			if(STATE_STATIC != ctrler->ustate){
 				bdev->set_speed(bdev, ctrler->speed);	
 			}
-			if(STATE_OFF != ctrler->ustate){
+			if(STATE_OFF != ctrler->lstate){
 				udev->set_speed(udev, ctrler->speed);			
 			}
 			gpio_set_value(&ctrler->speed_led, 1);
@@ -259,12 +260,12 @@ int beeper_work(uint8_t count, uint8_t unused, struct controller *ctrler)
 		dev_err("%s: Invalid parameter!\n", __func__);
 		return -1;
 	}
-	for(loop = 0; loop < count; loop++){
-		gpio_set_value(&ctrler->beeper, 1);
-		delay_ms(100);
-		gpio_set_value(&ctrler->beeper, 0);
-		delay_ms(100);
-	}
+//	for(loop = 0; loop < count; loop++){
+//		gpio_set_value(&ctrler->beeper, 1);
+//		delay_ms(100);
+//		gpio_set_value(&ctrler->beeper, 0);
+//		delay_ms(100);
+//	}
 	return 0;
 }
 int beeper_work_long(uint8_t unused1, uint8_t unused2, struct controller *ctrler)
@@ -274,8 +275,8 @@ int beeper_work_long(uint8_t unused1, uint8_t unused2, struct controller *ctrler
 		dev_err("%s: Invalid parameter!\n", __func__);
 		return -1;
 	}
-	gpio_set_value(&ctrler->beeper, 1);
-	delay_ms(1000);
-	gpio_set_value(&ctrler->beeper, 0);
+//	gpio_set_value(&ctrler->beeper, 1);
+//	delay_ms(1000);
+//	gpio_set_value(&ctrler->beeper, 0);
 	return 0;
 }

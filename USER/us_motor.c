@@ -11,13 +11,13 @@ long speed_to_high_pulse(struct us_motor_device *umd, enum motor_speed speed)
 				high_pulse = 0;
 		break;
 	    case SPEED_SLOW:
-				high_pulse = 10*100 - 1;
+				high_pulse = 10*100;
 		break;
 	    case SPEED_MEDIUM:
-				high_pulse = 30*100 - 1;
+				high_pulse = 30*100;
 		break;
 	    case SPEED_FAST:
-				high_pulse = 50*100 - 1;
+				high_pulse = 50*100;
 		break;
 	    default:
 		break;
@@ -132,7 +132,9 @@ int set_speed(struct us_motor_device *umd, enum motor_speed speed)
 	return -1;
     }
     umd->speed = speed;
-    pwm_set_high_pulse(umd->tim, umd->channel, high_pulse);
+		pwm_set_high_pulse(umd->tim, umd->channel, high_pulse);
+
+		delay_ms(10);
     return 0;
 }
 int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
@@ -170,6 +172,7 @@ int us_motor_init(struct us_motor_device **pum, struct us_motor_init_para *para)
 	*pum = umd;	
 	/*  TODO: 修改speed对应PWM的high-pulse时间, 并且修改PWM的设置 */
 	pwm_init(umd->tim, umd->channel, &umd->power,speed_to_high_pulse(umd, para->default_speed), 50);
+
 
 	/* TODO: IO口初始化是否正确 */
 	if(MOTOR_FOR_BACK == umd->type){
